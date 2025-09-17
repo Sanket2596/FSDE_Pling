@@ -4,6 +4,9 @@ import SportsSelection from './components/SportsSelection';
 import SelectedSportsScreen from './components/SelectedSportsScreen';
 import WorkoutActivityScreen from './components/WorkoutActivityScreen';
 import TrainingLocationScreen from './components/TrainingLocationScreen';
+import TrainingFrequencyScreen from './components/TrainingFrequencyScreen';
+import HealthProblemsScreen from './components/HealthProblemsScreen';
+import DietTypeScreen from './components/DietTypeScreen';
 import ErrorBoundary from './components/ErrorBoundary';
 import { useSports } from './hooks/useSports';
 
@@ -12,9 +15,12 @@ interface AppState {
   selectedSports: string[];
   selectedActivities: string[];
   selectedLocations: string[];
+  selectedFrequency: string;
+  selectedHealthProblem: string;
+  selectedDietType: string;
   completedSteps: string[];
   showSelectedScreen: boolean;
-  currentScreen: 'sports' | 'selected' | 'workout' | 'location';
+  currentScreen: 'sports' | 'selected' | 'workout' | 'location' | 'frequency' | 'health' | 'diet';
 }
 
 const App: React.FC = () => {
@@ -23,6 +29,9 @@ const App: React.FC = () => {
     selectedSports: [],
     selectedActivities: ['strength-training'], // Pre-select "Strenght training" to match image
     selectedLocations: ['outdoor'], // Pre-select "Outdoor" to match image
+    selectedFrequency: '', // No pre-selection
+    selectedHealthProblem: '', // No pre-selection
+    selectedDietType: '', // No pre-selection
     completedSteps: [],
     showSelectedScreen: false,
     currentScreen: 'sports'
@@ -72,10 +81,43 @@ const App: React.FC = () => {
   };
 
   const handleLocationSelection = (selectedLocations: string[]) => {
+    // Move to Screen 5 (Training Frequency)
     setAppState((prev: AppState) => ({
       ...prev,
       selectedLocations,
       completedSteps: [...prev.completedSteps, 'location'],
+      currentStep: 5,
+      currentScreen: 'frequency'
+    }));
+  };
+
+  const handleFrequencySelection = (selectedFrequency: string) => {
+    // Move to Screen 6 (Health Problems)
+    setAppState((prev: AppState) => ({
+      ...prev,
+      selectedFrequency,
+      completedSteps: [...prev.completedSteps, 'frequency'],
+      currentStep: 6,
+      currentScreen: 'health'
+    }));
+  };
+
+  const handleHealthProblemSelection = (selectedHealthProblem: string) => {
+    // Move to Screen 7 (Diet Type)
+    setAppState((prev: AppState) => ({
+      ...prev,
+      selectedHealthProblem,
+      completedSteps: [...prev.completedSteps, 'health'],
+      currentStep: 7,
+      currentScreen: 'diet'
+    }));
+  };
+
+  const handleDietTypeSelection = (selectedDietType: string) => {
+    setAppState((prev: AppState) => ({
+      ...prev,
+      selectedDietType,
+      completedSteps: [...prev.completedSteps, 'diet'],
       currentStep: Math.min(prev.currentStep + 1, totalSteps),
       currentScreen: 'sports' // Move to next screen or back to sports
     }));
@@ -111,6 +153,27 @@ const App: React.FC = () => {
         ...prev,
         currentStep: 3,
         currentScreen: 'workout'
+      }));
+    } else if (appState.currentScreen === 'frequency') {
+      // Go back to Step 4 (Training Location Screen)
+      setAppState((prev: AppState) => ({
+        ...prev,
+        currentStep: 4,
+        currentScreen: 'location'
+      }));
+    } else if (appState.currentScreen === 'health') {
+      // Go back to Step 5 (Training Frequency Screen)
+      setAppState((prev: AppState) => ({
+        ...prev,
+        currentStep: 5,
+        currentScreen: 'frequency'
+      }));
+    } else if (appState.currentScreen === 'diet') {
+      // Go back to Step 6 (Health Problems Screen)
+      setAppState((prev: AppState) => ({
+        ...prev,
+        currentStep: 6,
+        currentScreen: 'health'
       }));
     } else {
       // Go back to previous step
@@ -152,6 +215,39 @@ const App: React.FC = () => {
           totalSteps={totalSteps}
           selectedLocations={appState.selectedLocations}
           onContinue={handleLocationSelection}
+          onSkip={handleSkip}
+          onBack={handleBack}
+        />
+      );
+    } else if (appState.currentScreen === 'frequency') {
+      return (
+        <TrainingFrequencyScreen
+          currentStep={appState.currentStep}
+          totalSteps={totalSteps}
+          selectedFrequency={appState.selectedFrequency}
+          onContinue={handleFrequencySelection}
+          onSkip={handleSkip}
+          onBack={handleBack}
+        />
+      );
+    } else if (appState.currentScreen === 'health') {
+      return (
+        <HealthProblemsScreen
+          currentStep={appState.currentStep}
+          totalSteps={totalSteps}
+          selectedHealthProblem={appState.selectedHealthProblem}
+          onContinue={handleHealthProblemSelection}
+          onSkip={handleSkip}
+          onBack={handleBack}
+        />
+      );
+    } else if (appState.currentScreen === 'diet') {
+      return (
+        <DietTypeScreen
+          currentStep={appState.currentStep}
+          totalSteps={totalSteps}
+          selectedDietType={appState.selectedDietType}
+          onContinue={handleDietTypeSelection}
           onSkip={handleSkip}
           onBack={handleBack}
         />
