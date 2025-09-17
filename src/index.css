@@ -48,7 +48,16 @@
     @apply w-full bg-white/20 rounded-full h-1;
   }
 
-  .progress-fill {
-    @apply bg-accent-orange h-1 rounded-full transition-all duration-300;
-  }
-}
+      .progress-fill {
+        @apply bg-accent-orange h-1 rounded-full transition-all duration-300;
+      }
+
+      .scrollbar-hide {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+      }
+
+      .scrollbar-hide::-webkit-scrollbar {
+        display: none;
+      }
+    }

@@ -7,6 +7,8 @@ import TrainingLocationScreen from './components/TrainingLocationScreen';
 import TrainingFrequencyScreen from './components/TrainingFrequencyScreen';
 import HealthProblemsScreen from './components/HealthProblemsScreen';
 import DietTypeScreen from './components/DietTypeScreen';
+import ImprovementAreasScreen from './components/ImprovementAreasScreen';
+import PersonalizedJourneyScreen from './components/PersonalizedJourneyScreen';
 import ErrorBoundary from './components/ErrorBoundary';
 import { useSports } from './hooks/useSports';
 
@@ -18,9 +20,10 @@ interface AppState {
   selectedFrequency: string;
   selectedHealthProblem: string;
   selectedDietType: string;
+  selectedImprovementAreas: string[];
   completedSteps: string[];
   showSelectedScreen: boolean;
-  currentScreen: 'sports' | 'selected' | 'workout' | 'location' | 'frequency' | 'health' | 'diet';
+  currentScreen: 'sports' | 'selected' | 'workout' | 'location' | 'frequency' | 'health' | 'diet' | 'improvement' | 'journey';
 }
 
 const App: React.FC = () => {
@@ -32,6 +35,7 @@ const App: React.FC = () => {
     selectedFrequency: '', // No pre-selection
     selectedHealthProblem: '', // No pre-selection
     selectedDietType: '', // No pre-selection
+    selectedImprovementAreas: [], // No pre-selection
     completedSteps: [],
     showSelectedScreen: false,
     currentScreen: 'sports'
@@ -114,12 +118,33 @@ const App: React.FC = () => {
   };
 
   const handleDietTypeSelection = (selectedDietType: string) => {
+    // Move to Screen 8 (Improvement Areas)
     setAppState((prev: AppState) => ({
       ...prev,
       selectedDietType,
       completedSteps: [...prev.completedSteps, 'diet'],
-      currentStep: Math.min(prev.currentStep + 1, totalSteps),
-      currentScreen: 'sports' // Move to next screen or back to sports
+      currentStep: 8,
+      currentScreen: 'improvement'
+    }));
+  };
+
+  const handleImprovementAreasSelection = (selectedAreas: string[]) => {
+    // Move to Personalized Journey Screen
+    setAppState((prev: AppState) => ({
+      ...prev,
+      selectedImprovementAreas: selectedAreas,
+      completedSteps: [...prev.completedSteps, 'improvement'],
+      currentStep: 9,
+      currentScreen: 'journey'
+    }));
+  };
+
+  const handleJourneyContinue = () => {
+    // Reset to start of flow or go to main app
+    setAppState((prev: AppState) => ({
+      ...prev,
+      currentStep: 1,
+      currentScreen: 'sports'
     }));
   };
 
@@ -174,6 +199,20 @@ const App: React.FC = () => {
         ...prev,
         currentStep: 6,
         currentScreen: 'health'
+      }));
+    } else if (appState.currentScreen === 'improvement') {
+      // Go back to Step 7 (Diet Type Screen)
+      setAppState((prev: AppState) => ({
+        ...prev,
+        currentStep: 7,
+        currentScreen: 'diet'
+      }));
+    } else if (appState.currentScreen === 'journey') {
+      // Go back to Step 8 (Improvement Areas Screen)
+      setAppState((prev: AppState) => ({
+        ...prev,
+        currentStep: 8,
+        currentScreen: 'improvement'
       }));
     } else {
       // Go back to previous step
@@ -249,6 +288,24 @@ const App: React.FC = () => {
           selectedDietType={appState.selectedDietType}
           onContinue={handleDietTypeSelection}
           onSkip={handleSkip}
+          onBack={handleBack}
+        />
+      );
+    } else if (appState.currentScreen === 'improvement') {
+      return (
+        <ImprovementAreasScreen
+          currentStep={appState.currentStep}
+          totalSteps={totalSteps}
+          selectedAreas={appState.selectedImprovementAreas}
+          onContinue={handleImprovementAreasSelection}
+          onSkip={handleSkip}
+          onBack={handleBack}
+        />
+      );
+    } else if (appState.currentScreen === 'journey') {
+      return (
+        <PersonalizedJourneyScreen
+          onContinue={handleJourneyContinue}
           onBack={handleBack}
         />
       );
