@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useUserProfile } from '../hooks/useUserProfile';
 import LoadingSpinner from './LoadingSpinner';
 import ErrorMessage from './ErrorMessage';
+import RunningActivityScreen from './RunningActivityScreen';
 
 interface PersonalizedJourneyScreenProps {
   onContinue: () => void;
@@ -13,6 +14,20 @@ const PersonalizedJourneyScreen: React.FC<PersonalizedJourneyScreenProps> = ({
   onBack
 }) => {
   const { userProfile, loading, error, refetch } = useUserProfile();
+  const [selectedActivity, setSelectedActivity] = useState<string>('running');
+  const [showRunningScreen, setShowRunningScreen] = useState<boolean>(false);
+
+  const handleRunningClick = () => {
+    setShowRunningScreen(true);
+  };
+
+  const handleBackFromRunning = () => {
+    setShowRunningScreen(false);
+  };
+
+  if (showRunningScreen) {
+    return <RunningActivityScreen onBack={handleBackFromRunning} />;
+  }
 
   return (
     <div className="min-h-screen bg-white text-gray-900 flex flex-col w-full">
@@ -109,68 +124,150 @@ const PersonalizedJourneyScreen: React.FC<PersonalizedJourneyScreenProps> = ({
                 </div>
               </div>
 
+              {/* Running Metrics - Always visible */}
+              <div className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-2xl p-6 text-white">
+                <div className="grid grid-cols-3 gap-4">
+                  {/* Weight */}
+                  <div className="text-center">
+                    <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-2">
+                      <div className="text-2xl">⚖️</div>
+                    </div>
+                    <p className="text-sm text-gray-300 mb-1">Weight</p>
+                    <p className="text-lg font-bold">86.5 kg</p>
+                  </div>
+                  
+                  {/* Steps */}
+                  <div className="text-center">
+                    <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-2">
+                      <div className="text-2xl">👟</div>
+                    </div>
+                    <p className="text-sm text-gray-300 mb-1">Step</p>
+                    <p className="text-lg font-bold">1428 steps</p>
+                  </div>
+                  
+                  {/* Heart Rate */}
+                  <div className="text-center">
+                    <div className="w-12 h-12 bg-pink-100 rounded-full flex items-center justify-center mx-auto mb-2">
+                      <div className="text-2xl">❤️</div>
+                    </div>
+                    <p className="text-sm text-gray-300 mb-1">Heart Rate</p>
+                    <p className="text-lg font-bold">80 Bpm</p>
+                  </div>
+                </div>
+              </div>
+
               {/* What are you up to today? */}
               <div>
                 <h3 className="text-lg text-gray-500 mb-4">What are you up to today?</h3>
                 <div className="flex space-x-4 overflow-x-auto pb-2 scrollbar-hide">
-                  <div className="flex-shrink-0 w-20 h-20 bg-yellow-100 rounded-xl flex flex-col items-center justify-center space-y-1">
+                  <button 
+                    onClick={handleRunningClick}
+                    className={`flex-shrink-0 w-20 h-20 rounded-xl flex flex-col items-center justify-center space-y-1 border-2 ${
+                      selectedActivity === 'running' 
+                        ? 'bg-blue-100 border-blue-400' 
+                        : 'bg-white border-gray-200'
+                    }`}
+                  >
                     <div className="text-2xl">🏃‍♂️</div>
                     <span className="text-xs font-medium text-gray-900">Running</span>
-                  </div>
-                  <div className="flex-shrink-0 w-20 h-20 bg-blue-100 rounded-xl flex flex-col items-center justify-center space-y-1">
+                  </button>
+                  <button 
+                    onClick={() => setSelectedActivity('cycling')}
+                    className={`flex-shrink-0 w-20 h-20 rounded-xl flex flex-col items-center justify-center space-y-1 border-2 ${
+                      selectedActivity === 'cycling' 
+                        ? 'bg-blue-100 border-blue-400' 
+                        : 'bg-white border-gray-200'
+                    }`}
+                  >
                     <div className="text-2xl">🚴‍♀️</div>
                     <span className="text-xs font-medium text-gray-900">Cycling</span>
-                  </div>
-                  <div className="flex-shrink-0 w-20 h-20 bg-yellow-100 rounded-xl flex flex-col items-center justify-center space-y-1">
+                  </button>
+                  <button 
+                    onClick={() => setSelectedActivity('yoga')}
+                    className={`flex-shrink-0 w-20 h-20 rounded-xl flex flex-col items-center justify-center space-y-1 border-2 ${
+                      selectedActivity === 'yoga' 
+                        ? 'bg-blue-100 border-blue-400' 
+                        : 'bg-white border-gray-200'
+                    }`}
+                  >
                     <div className="text-2xl">🧘‍♀️</div>
                     <span className="text-xs font-medium text-gray-900">Yoga</span>
-                  </div>
-                  <div className="flex-shrink-0 w-20 h-20 bg-purple-100 rounded-xl flex flex-col items-center justify-center space-y-1">
+                  </button>
+                  <button 
+                    onClick={() => setSelectedActivity('gym')}
+                    className={`flex-shrink-0 w-20 h-20 rounded-xl flex flex-col items-center justify-center space-y-1 border-2 ${
+                      selectedActivity === 'gym' 
+                        ? 'bg-blue-100 border-blue-400' 
+                        : 'bg-white border-gray-200'
+                    }`}
+                  >
                     <div className="text-2xl">🏋️‍♂️</div>
                     <span className="text-xs font-medium text-gray-900">Gym</span>
-                  </div>
+                  </button>
                 </div>
               </div>
 
-              {/* Your habits */}
+              {/* Your habits - 2x2 grid */}
               <div>
                 <h3 className="text-lg text-gray-500 mb-4">Your habits</h3>
-                <div className="flex space-x-4 overflow-x-auto pb-2 scrollbar-hide">
+                <div className="grid grid-cols-2 gap-4">
                   {/* Goals Card */}
-                  <div className="flex-shrink-0 w-32 h-20 bg-pink-100 rounded-xl flex items-center space-x-3 p-3">
-                    <div className="w-10 h-10 bg-pink-200 rounded-full flex items-center justify-center">
-                      <div className="text-lg">🎯</div>
-                    </div>
-                    <div>
-                      <h4 className="font-bold text-gray-900 text-sm">Goals</h4>
-                      <p className="text-xs text-gray-500">73% achieved</p>
+                  <div className="bg-white rounded-xl p-4 border border-gray-200">
+                    <div className="flex items-center space-x-3 mb-3">
+                      <div className="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center">
+                        <div className="text-2xl">🎯</div>
+                      </div>
+                      <div>
+                        <h4 className="font-bold text-gray-900">Goals</h4>
+                        <p className="text-sm text-gray-500">73% achieved</p>
+                      </div>
                     </div>
                   </div>
 
                   {/* Nutrition Card */}
-                  <div className="flex-shrink-0 w-32 h-20 bg-green-100 rounded-xl flex items-center space-x-3 p-3">
-                    <div className="w-10 h-10 bg-green-200 rounded-full flex items-center justify-center">
-                      <div className="text-lg">🥑</div>
+                  <div className="bg-white rounded-xl p-4 border border-gray-200">
+                    <div className="flex items-center space-x-3 mb-3">
+                      <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
+                        <div className="text-2xl">🥑</div>
+                      </div>
+                      <div>
+                        <h4 className="font-bold text-gray-900">Nutrition</h4>
+                        <p className="text-sm text-gray-500">3 hours of fasting</p>
+                      </div>
                     </div>
-                    <div>
-                      <h4 className="font-bold text-gray-900 text-sm">Nutrition</h4>
-                      <p className="text-xs text-gray-500">3 hours of fasting</p>
+                  </div>
+
+                  {/* Challenges Card */}
+                  <div className="bg-white rounded-xl p-4 border border-gray-200">
+                    <div className="flex items-center space-x-3 mb-3">
+                      <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+                        <div className="text-2xl">🏔️</div>
+                      </div>
+                      <div>
+                        <h4 className="font-bold text-gray-900">Challenges</h4>
+                        <p className="text-sm text-gray-500">73% achieved</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Daily Reports Card */}
+                  <div className="bg-white rounded-xl p-4 border border-gray-200">
+                    <div className="flex items-center space-x-3 mb-3">
+                      <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center">
+                        <div className="text-2xl">📊</div>
+                      </div>
+                      <div className="flex-1">
+                        <h4 className="font-bold text-gray-900">Daily Reports</h4>
+                        <p className="text-sm text-gray-500">All your details in a single place.</p>
+                      </div>
+                      <button className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center hover:bg-blue-600 transition-colors">
+                        <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                        </svg>
+                      </button>
                     </div>
                   </div>
                 </div>
-              </div>
-
-              {/* Daily Reports */}
-              <div className="flex items-center justify-between bg-white rounded-xl p-4 border border-gray-200">
-                <div>
-                  <h3 className="text-lg font-bold text-gray-900 mb-1">Daily Reports</h3>
-                  <p className="text-sm text-gray-500">All your details in a single place.</p>
-                </div>
-                <button className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
-                  <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                  </svg>
-                </button>
               </div>
             </div>
           </>
