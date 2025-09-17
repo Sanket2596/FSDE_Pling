@@ -1,0 +1,54 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    box-sizing: border-box;
+  }
+  
+  body {
+    @apply bg-white text-gray-900;
+    font-feature-settings: "rlig" 1, "calt" 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply bg-accent-blue hover:bg-blue-600 text-white font-semibold py-4 px-6 rounded-button transition-colors duration-200 disabled:bg-gray-600 disabled:cursor-not-allowed;
+  }
+  
+  .btn-secondary {
+    @apply bg-secondary-100 hover:bg-secondary-200 text-secondary-700 font-medium py-2 px-4 rounded-lg transition-colors duration-200;
+  }
+  
+  .card {
+    @apply bg-design-card rounded-card shadow-card p-4 transition-all duration-200;
+  }
+  
+  .input-field {
+    @apply w-full px-3 py-2 border border-secondary-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent;
+  }
+
+  .sport-card {
+    @apply bg-design-card rounded-card p-4 cursor-pointer transition-all duration-200 hover:scale-[1.02] hover:shadow-lg border border-gray-200;
+  }
+
+  .sport-card.selected {
+    @apply bg-selection-bg border-selection-border ring-2 ring-selection-ring;
+  }
+
+  .progress-bar {
+    @apply w-full bg-white/20 rounded-full h-1;
+  }
+
+  .progress-fill {
+    @apply bg-accent-orange h-1 rounded-full transition-all duration-300;
+  }
+}
