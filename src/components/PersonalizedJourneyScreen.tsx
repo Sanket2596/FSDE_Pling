@@ -29,7 +29,7 @@ const PersonalizedJourneyScreen: React.FC<PersonalizedJourneyScreenProps> = ({
       </div>
 
       {/* Main Content */}
-      <div className="flex-1 overflow-y-auto px-6 py-4">
+      <div className="flex-1 overflow-y-auto px-6 py-4 scrollbar-hide">
         {/* Loading State */}
         {loading && (
           <div className="flex-1 flex items-center justify-center">
@@ -111,54 +111,50 @@ const PersonalizedJourneyScreen: React.FC<PersonalizedJourneyScreenProps> = ({
 
               {/* What are you up to today? */}
               <div>
-                <h3 className="text-xl font-bold text-gray-900 mb-4">What are you up to today?</h3>
-                <div className="flex space-x-4 overflow-x-auto pb-2">
-                  <div className="flex-shrink-0 w-24 h-24 bg-white border-2 border-gray-200 rounded-xl flex flex-col items-center justify-center space-y-2">
+                <h3 className="text-lg text-gray-500 mb-4">What are you up to today?</h3>
+                <div className="flex space-x-4 overflow-x-auto pb-2 scrollbar-hide">
+                  <div className="flex-shrink-0 w-20 h-20 bg-yellow-100 rounded-xl flex flex-col items-center justify-center space-y-1">
                     <div className="text-2xl">🏃‍♂️</div>
-                    <span className="text-sm font-medium text-gray-900">Running</span>
+                    <span className="text-xs font-medium text-gray-900">Running</span>
                   </div>
-                  <div className="flex-shrink-0 w-24 h-24 bg-white border-2 border-gray-200 rounded-xl flex flex-col items-center justify-center space-y-2">
+                  <div className="flex-shrink-0 w-20 h-20 bg-blue-100 rounded-xl flex flex-col items-center justify-center space-y-1">
                     <div className="text-2xl">🚴‍♀️</div>
-                    <span className="text-sm font-medium text-gray-900">Cycling</span>
+                    <span className="text-xs font-medium text-gray-900">Cycling</span>
                   </div>
-                  <div className="flex-shrink-0 w-24 h-24 bg-white border-2 border-gray-200 rounded-xl flex flex-col items-center justify-center space-y-2">
+                  <div className="flex-shrink-0 w-20 h-20 bg-yellow-100 rounded-xl flex flex-col items-center justify-center space-y-1">
                     <div className="text-2xl">🧘‍♀️</div>
-                    <span className="text-sm font-medium text-gray-900">Yoga</span>
+                    <span className="text-xs font-medium text-gray-900">Yoga</span>
                   </div>
-                  <div className="flex-shrink-0 w-24 h-24 bg-white border-2 border-gray-200 rounded-xl flex flex-col items-center justify-center space-y-2">
+                  <div className="flex-shrink-0 w-20 h-20 bg-purple-100 rounded-xl flex flex-col items-center justify-center space-y-1">
                     <div className="text-2xl">🏋️‍♂️</div>
-                    <span className="text-sm font-medium text-gray-900">Gym</span>
+                    <span className="text-xs font-medium text-gray-900">Gym</span>
                   </div>
                 </div>
               </div>
 
               {/* Your habits */}
               <div>
-                <h3 className="text-xl font-bold text-gray-900 mb-4">Your habits</h3>
-                <div className="grid grid-cols-2 gap-4">
+                <h3 className="text-lg text-gray-500 mb-4">Your habits</h3>
+                <div className="flex space-x-4 overflow-x-auto pb-2 scrollbar-hide">
                   {/* Goals Card */}
-                  <div className="bg-white rounded-xl p-4 border border-gray-200">
-                    <div className="flex items-center space-x-3 mb-3">
-                      <div className="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center">
-                        <div className="text-2xl">🎯</div>
-                      </div>
-                      <div>
-                        <h4 className="font-bold text-gray-900">Goals</h4>
-                        <p className="text-sm text-gray-500">73% achieved</p>
-                      </div>
+                  <div className="flex-shrink-0 w-32 h-20 bg-pink-100 rounded-xl flex items-center space-x-3 p-3">
+                    <div className="w-10 h-10 bg-pink-200 rounded-full flex items-center justify-center">
+                      <div className="text-lg">🎯</div>
+                    </div>
+                    <div>
+                      <h4 className="font-bold text-gray-900 text-sm">Goals</h4>
+                      <p className="text-xs text-gray-500">73% achieved</p>
                     </div>
                   </div>
 
                   {/* Nutrition Card */}
-                  <div className="bg-white rounded-xl p-4 border border-gray-200">
-                    <div className="flex items-center space-x-3 mb-3">
-                      <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
-                        <div className="text-2xl">🥑</div>
-                      </div>
-                      <div>
-                        <h4 className="font-bold text-gray-900">Nutrition</h4>
-                        <p className="text-sm text-gray-500">3 hours of fasting</p>
-                      </div>
+                  <div className="flex-shrink-0 w-32 h-20 bg-green-100 rounded-xl flex items-center space-x-3 p-3">
+                    <div className="w-10 h-10 bg-green-200 rounded-full flex items-center justify-center">
+                      <div className="text-lg">🥑</div>
+                    </div>
+                    <div>
+                      <h4 className="font-bold text-gray-900 text-sm">Nutrition</h4>
+                      <p className="text-xs text-gray-500">3 hours of fasting</p>
                     </div>
                   </div>
                 </div>
