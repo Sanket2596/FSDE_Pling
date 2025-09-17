@@ -3,6 +3,7 @@ import ResponsiveLayout from './components/ResponsiveLayout';
 import SportsSelection from './components/SportsSelection';
 import SelectedSportsScreen from './components/SelectedSportsScreen';
 import WorkoutActivityScreen from './components/WorkoutActivityScreen';
+import TrainingLocationScreen from './components/TrainingLocationScreen';
 import ErrorBoundary from './components/ErrorBoundary';
 import { useSports } from './hooks/useSports';
 
@@ -10,9 +11,10 @@ interface AppState {
   currentStep: number;
   selectedSports: string[];
   selectedActivities: string[];
+  selectedLocations: string[];
   completedSteps: string[];
   showSelectedScreen: boolean;
-  currentScreen: 'sports' | 'selected' | 'workout';
+  currentScreen: 'sports' | 'selected' | 'workout' | 'location';
 }
 
 const App: React.FC = () => {
@@ -20,6 +22,7 @@ const App: React.FC = () => {
     currentStep: 2,
     selectedSports: [],
     selectedActivities: ['strength-training'], // Pre-select "Strenght training" to match image
+    selectedLocations: ['outdoor'], // Pre-select "Outdoor" to match image
     completedSteps: [],
     showSelectedScreen: false,
     currentScreen: 'sports'
@@ -58,10 +61,21 @@ const App: React.FC = () => {
   };
 
   const handleWorkoutActivitySelection = (selectedActivities: string[]) => {
+    // Move to Screen 4 (Training Location)
     setAppState((prev: AppState) => ({
       ...prev,
       selectedActivities,
       completedSteps: [...prev.completedSteps, 'workout'],
+      currentStep: 4,
+      currentScreen: 'location'
+    }));
+  };
+
+  const handleLocationSelection = (selectedLocations: string[]) => {
+    setAppState((prev: AppState) => ({
+      ...prev,
+      selectedLocations,
+      completedSteps: [...prev.completedSteps, 'location'],
       currentStep: Math.min(prev.currentStep + 1, totalSteps),
       currentScreen: 'sports' // Move to next screen or back to sports
     }));
@@ -90,6 +104,13 @@ const App: React.FC = () => {
         currentStep: 2,
         currentScreen: 'selected',
         showSelectedScreen: true
+      }));
+    } else if (appState.currentScreen === 'location') {
+      // Go back to Step 3 (Workout Activity Screen)
+      setAppState((prev: AppState) => ({
+        ...prev,
+        currentStep: 3,
+        currentScreen: 'workout'
       }));
     } else {
       // Go back to previous step
@@ -120,6 +141,17 @@ const App: React.FC = () => {
           totalSteps={totalSteps}
           selectedActivities={appState.selectedActivities}
           onContinue={handleWorkoutActivitySelection}
+          onSkip={handleSkip}
+          onBack={handleBack}
+        />
+      );
+    } else if (appState.currentScreen === 'location') {
+      return (
+        <TrainingLocationScreen
+          currentStep={appState.currentStep}
+          totalSteps={totalSteps}
+          selectedLocations={appState.selectedLocations}
+          onContinue={handleLocationSelection}
           onSkip={handleSkip}
           onBack={handleBack}
         />
