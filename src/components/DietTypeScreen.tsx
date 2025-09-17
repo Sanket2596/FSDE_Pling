@@ -72,10 +72,10 @@ const DietTypeScreen: React.FC<DietTypeScreenProps> = ({
         </div>
 
         {/* Progress Bar */}
-        <div className="w-full bg-gray-200 rounded-full h-1 mb-8">
+        <div className="w-full bg-gray-200 rounded-full h-1 mb-8 overflow-hidden">
           <div 
             className="bg-yellow-400 h-1 rounded-full transition-all duration-300"
-            style={{ width: `${progressPercentage}%` }}
+            style={{ width: `${Math.min(progressPercentage, 100)}%` }}
           ></div>
         </div>
       </div>
