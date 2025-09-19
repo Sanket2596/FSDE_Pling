@@ -42,7 +42,7 @@ const App: React.FC = () => {
   });
 
   const { sports } = useSports();
-  const totalSteps = 5; // Assuming 5 total steps in the flow
+  const totalSteps = 9; // 9 total steps in the flow
 
   const handleSportSelection = (selectedSports: string[]) => {
     setAppState((prev: AppState) => ({
