@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTrainingLocations } from '../hooks/useTrainingLocations';
 import { TrainingLocation } from '../services/locationApi';
 import LoadingSpinner from './LoadingSpinner';
@@ -23,6 +23,11 @@ const TrainingLocationScreen: React.FC<TrainingLocationScreenProps> = ({
 }) => {
   const [selectedLocations, setSelectedLocations] = useState<string[]>(initialSelectedLocations);
   const { locations, loading, error, refetch } = useTrainingLocations();
+
+  // Sync state with prop changes
+  useEffect(() => {
+    setSelectedLocations(initialSelectedLocations);
+  }, [initialSelectedLocations]);
 
   const handleLocationToggle = (locationId: string) => {
     setSelectedLocations(prev => 
@@ -76,58 +81,149 @@ const TrainingLocationScreen: React.FC<TrainingLocationScreenProps> = ({
         </div>
 
         {/* Progress Bar */}
-        <div className="w-full bg-gray-200 rounded-full h-1 mb-8">
+        <div className="w-full bg-gray-200 rounded-full h-1 mb-8 overflow-hidden">
           <div 
             className="bg-accent-orange h-1 rounded-full transition-all duration-300"
-            style={{ width: `${progressPercentage}%` }}
+            style={{ width: `${Math.min(progressPercentage, 100)}%` }}
           ></div>
         </div>
       </div>
 
       {/* Main Content */}
       <div className="px-6 flex-1 flex flex-col">
-        <h2 className="text-2xl font-bold mb-2 leading-tight text-gray-900">
-          Where do you enjoy the most to train?
-        </h2>
-        <p className="text-gray-600 text-sm mb-8">
-          Select all that applies:
-        </p>
+        {/* Content Container */}
+        <div 
+          className="flex flex-col items-start mx-auto"
+          style={{
+            width: '327px',
+            height: '312px',
+            gap: '24px',
+            padding: '0px'
+          }}
+        >
+          {/* Title and Body */}
+          <div 
+            className="flex flex-col items-center"
+            style={{
+              width: '327px',
+              height: '64px',
+              gap: '10px',
+              padding: '0px'
+            }}
+          >
+            {/* Title */}
+            <h2 
+              className="flex items-end"
+              style={{
+                width: '327px',
+                height: '34px',
+                fontFamily: 'Plus Jakarta Sans',
+                fontStyle: 'normal',
+                fontWeight: 700,
+                fontSize: '26px',
+                lineHeight: '34px',
+                color: '#39434F',
+                display: 'flex',
+                alignItems: 'flex-end'
+              }}
+            >
+              Where do you enjoy the most to train?
+            </h2>
+            
+            {/* Body */}
+            <p 
+              className="flex items-end"
+              style={{
+                width: '327px',
+                height: '20px',
+                fontFamily: 'Plus Jakarta Sans',
+                fontStyle: 'normal',
+                fontWeight: 500,
+                fontSize: '14px',
+                lineHeight: '20px',
+                color: '#808B9A',
+                display: 'flex',
+                alignItems: 'flex-end'
+              }}
+            >
+              Select all that applies:
+            </p>
+          </div>
 
-        {/* Loading State */}
-        {loading && (
-          <div className="flex-1 flex items-center justify-center">
-            <div className="text-center">
-              <LoadingSpinner size="lg" className="mb-4" />
-              <p className="text-gray-600">Loading locations...</p>
+          {/* Loading State */}
+          {loading && (
+            <div className="flex-1 flex items-center justify-center">
+              <div className="text-center">
+                <LoadingSpinner size="lg" className="mb-4" />
+                <p className="text-gray-600">Loading locations...</p>
+              </div>
             </div>
-          </div>
-        )}
+          )}
 
-        {/* Error State */}
-        {error && (
-          <div className="mb-6">
-            <ErrorMessage 
-              message={error} 
-              onRetry={refetch}
-            />
-          </div>
-        )}
-
-        {/* Location Options - 2x3 Grid */}
-        {!loading && !error && (
-          <div className="flex-1 overflow-y-auto">
-            <div className="grid grid-cols-2 gap-3 pb-4">
-              {locations.map((location) => (
-                <TrainingLocationCard
-                  key={location.id}
-                  location={location}
-                  isSelected={selectedLocations.includes(location.id)}
-                  onToggle={() => handleLocationToggle(location.id)}
-                />
-              ))}
+          {/* Error State */}
+          {error && (
+            <div className="mb-6">
+              <ErrorMessage 
+                message={error} 
+                onRetry={refetch}
+              />
             </div>
-          </div>
-        )}
+          )}
+
+          {/* Options */}
+          {!loading && !error && (
+            <div 
+              className="flex flex-col items-start"
+              style={{
+                width: '327px',
+                height: '224px',
+                gap: '16px',
+                padding: '0px'
+              }}
+            >
+              {/* Location Options - Horizontal Tags Layout */}
+              <div className="w-full">
+                {/* First row */}
+                <div 
+                  className="flex items-start mb-4"
+                  style={{
+                    width: '327px',
+                    height: '44px',
+                    gap: '12px'
+                  }}
+                >
+                  {locations.slice(0, 3).map((location) => (
+                    <TrainingLocationCard
+                      key={location.id}
+                      location={location}
+                      isSelected={selectedLocations.includes(location.id)}
+                      onToggle={() => handleLocationToggle(location.id)}
+                    />
+                  ))}
+                </div>
+                
+                {/* Second row */}
+                <div 
+                  className="flex items-start"
+                  style={{
+                    width: '327px',
+                    height: '44px',
+                    gap: '12px'
+                  }}
+                >
+                  {locations.slice(3, 5).map((location) => (
+                    <TrainingLocationCard
+                      key={location.id}
+                      location={location}
+                      isSelected={selectedLocations.includes(location.id)}
+                      onToggle={() => handleLocationToggle(location.id)}
+                    />
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Continue Button */}
@@ -135,7 +231,7 @@ const TrainingLocationScreen: React.FC<TrainingLocationScreenProps> = ({
         <button
           onClick={handleContinue}
           disabled={selectedLocations.length === 0}
-          className="w-full bg-accent-blue hover:bg-blue-600 disabled:bg-gray-300 disabled:cursor-not-allowed text-white font-semibold py-4 px-6 rounded-button transition-colors duration-200"
+          className="w-full bg-accent-blue hover:bg-blue-600 disabled:bg-gray-600 disabled:cursor-not-allowed text-white font-semibold py-4 px-6 rounded-button transition-colors duration-200"
         >
           Continue
         </button>
@@ -160,35 +256,80 @@ const TrainingLocationCard: React.FC<TrainingLocationCardProps> = ({
   isSelected, 
   onToggle 
 }) => {
+  // Determine card width based on location name (matching specs)
+  const getCardWidth = (name: string) => {
+    if (name === 'Outdoor') return '118px';
+    if (name === 'Indoor') return '92.5px';
+    if (name === 'Home') return '92.5px';
+    if (name === 'At the gym') return '130px';
+    if (name === 'In the park') return '128px';
+    return '92.5px';
+  };
+
+  const getTextWidth = (name: string) => {
+    if (name === 'Outdoor') return '60px';
+    if (name === 'Indoor') return '45px';
+    if (name === 'Home') return '41px';
+    if (name === 'At the gym') return '72px';
+    if (name === 'In the park') return '70px';
+    return '45px';
+  };
+
   return (
     <div 
-      className={`w-full rounded-xl p-4 cursor-pointer transition-all duration-200 hover:scale-[1.02] border-2 ${
-        isSelected 
-          ? 'bg-orange-100 border-orange-400' 
-          : 'bg-white border-gray-200'
-      }`}
+      className="cursor-pointer transition-all duration-200 hover:scale-[1.02]"
+      style={{
+        boxSizing: 'border-box',
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+        padding: '12px 18px',
+        gap: '4px',
+        width: getCardWidth(location.name),
+        height: '44px',
+        background: isSelected ? '#F5BA41' : '#FFFFFF',
+        border: isSelected ? '1px solid #E6B13B' : '1px solid #D9DFE6',
+        borderRadius: '14px'
+      }}
       onClick={onToggle}
     >
-      <div className="flex flex-col items-center text-center space-y-3">
-        <div className="text-3xl">
+      {/* Icon */}
+      <div 
+        style={{
+          width: '18px',
+          height: '18px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center'
+        }}
+      >
+        <span 
+          style={{
+            fontSize: '16px',
+            color: isSelected ? '#FFFFFF' : '#808B9A'
+          }}
+        >
           {location.icon}
-        </div>
-        <div>
-          <h3 className={`font-semibold text-sm ${
-            isSelected ? 'text-orange-800' : 'text-gray-900'
-          }`}>
-            {location.name}
-          </h3>
-        </div>
-        <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
-          isSelected 
-            ? 'border-orange-600 bg-orange-600' 
-            : 'border-gray-300'
-        }`}>
-          {isSelected && (
-            <div className="w-2 h-2 bg-white rounded-full"></div>
-          )}
-        </div>
+        </span>
+      </div>
+
+      {/* Text */}
+      <div 
+        style={{
+          width: getTextWidth(location.name),
+          height: '20px',
+          fontFamily: 'Plus Jakarta Sans',
+          fontWeight: isSelected ? 700 : 500,
+          fontSize: '14px',
+          lineHeight: '20px',
+          display: 'flex',
+          alignItems: 'center',
+          textAlign: 'center',
+          color: isSelected ? '#FFFFFF' : '#808B9A'
+        }}
+      >
+        {location.name}
       </div>
     </div>
   );

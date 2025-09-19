@@ -9,6 +9,7 @@ import HealthProblemsScreen from './components/HealthProblemsScreen';
 import DietTypeScreen from './components/DietTypeScreen';
 import ImprovementAreasScreen from './components/ImprovementAreasScreen';
 import PersonalizedJourneyScreen from './components/PersonalizedJourneyScreen';
+import DynamicContentScreen from './components/DynamicContentScreen';
 import ErrorBoundary from './components/ErrorBoundary';
 import { useSports } from './hooks/useSports';
 
@@ -23,19 +24,19 @@ interface AppState {
   selectedImprovementAreas: string[];
   completedSteps: string[];
   showSelectedScreen: boolean;
-  currentScreen: 'sports' | 'selected' | 'workout' | 'location' | 'frequency' | 'health' | 'diet' | 'improvement' | 'journey';
+  currentScreen: 'sports' | 'selected' | 'workout' | 'location' | 'frequency' | 'health' | 'diet' | 'improvement' | 'journey' | 'dynamic';
 }
 
 const App: React.FC = () => {
   const [appState, setAppState] = useState<AppState>({
-    currentStep: 2,
+    currentStep: 1,
     selectedSports: [],
-    selectedActivities: ['strength-training'], // Pre-select "Strenght training" to match image
-    selectedLocations: ['outdoor'], // Pre-select "Outdoor" to match image
-    selectedFrequency: '', // No pre-selection
-    selectedHealthProblem: '', // No pre-selection
-    selectedDietType: '', // No pre-selection
-    selectedImprovementAreas: [], // No pre-selection
+    selectedActivities: [],
+    selectedLocations: [],
+    selectedFrequency: '',
+    selectedHealthProblem: '',
+    selectedDietType: '',
+    selectedImprovementAreas: [],
     completedSteps: [],
     showSelectedScreen: false,
     currentScreen: 'sports'
@@ -149,11 +150,63 @@ const App: React.FC = () => {
   };
 
   const handleSkip = () => {
-    // Skip current step
-    setAppState((prev: AppState) => ({
-      ...prev,
-      currentStep: Math.min(prev.currentStep + 1, totalSteps)
-    }));
+    // Skip current step and move to next screen
+    if (appState.currentScreen === 'sports') {
+      // Skip sports selection, move to workout activity
+      setAppState((prev: AppState) => ({
+        ...prev,
+        currentStep: 3,
+        currentScreen: 'workout'
+      }));
+    } else if (appState.currentScreen === 'workout') {
+      // Skip workout activity, move to training location
+      setAppState((prev: AppState) => ({
+        ...prev,
+        currentStep: 4,
+        currentScreen: 'location'
+      }));
+    } else if (appState.currentScreen === 'location') {
+      // Skip training location, move to training frequency
+      setAppState((prev: AppState) => ({
+        ...prev,
+        currentStep: 5,
+        currentScreen: 'frequency'
+      }));
+    } else if (appState.currentScreen === 'frequency') {
+      // Skip training frequency, move to health problems
+      setAppState((prev: AppState) => ({
+        ...prev,
+        currentStep: 6,
+        currentScreen: 'health'
+      }));
+    } else if (appState.currentScreen === 'health') {
+      // Skip health problems, move to diet type
+      setAppState((prev: AppState) => ({
+        ...prev,
+        currentStep: 7,
+        currentScreen: 'diet'
+      }));
+    } else if (appState.currentScreen === 'diet') {
+      // Skip diet type, move to improvement areas
+      setAppState((prev: AppState) => ({
+        ...prev,
+        currentStep: 8,
+        currentScreen: 'improvement'
+      }));
+    } else if (appState.currentScreen === 'improvement') {
+      // Skip improvement areas, move to personalized journey
+      setAppState((prev: AppState) => ({
+        ...prev,
+        currentStep: 9,
+        currentScreen: 'journey'
+      }));
+    } else {
+      // Default: just increment step
+      setAppState((prev: AppState) => ({
+        ...prev,
+        currentStep: Math.min(prev.currentStep + 1, totalSteps)
+      }));
+    }
   };
 
   const handleBack = () => {
@@ -306,6 +359,13 @@ const App: React.FC = () => {
       return (
         <PersonalizedJourneyScreen
           onContinue={handleJourneyContinue}
+          onBack={handleBack}
+          onShowDynamicContent={() => setAppState(prev => ({ ...prev, currentScreen: 'dynamic' }))}
+        />
+      );
+    } else if (appState.currentScreen === 'dynamic') {
+      return (
+        <DynamicContentScreen
           onBack={handleBack}
         />
       );

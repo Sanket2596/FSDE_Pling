@@ -21,15 +21,21 @@ const HealthProblemsScreen: React.FC<HealthProblemsScreenProps> = ({
   totalSteps,
   selectedHealthProblem: initialSelectedHealthProblem
 }) => {
-  const [selectedHealthProblem, setSelectedHealthProblem] = useState<string>(initialSelectedHealthProblem);
+  const [selectedHealthProblem, setSelectedHealthProblem] = useState<string>('');
   const [healthDetails, setHealthDetails] = useState<string>('');
   const { healthProblems, loading, error, refetch } = useHealthProblems();
 
   const handleHealthProblemSelect = (healthProblemId: string) => {
-    setSelectedHealthProblem(healthProblemId);
-    // Clear health details when switching to "No" option
-    if (healthProblemId === 'no-problems') {
+    // If clicking the same option, deselect it
+    if (selectedHealthProblem === healthProblemId) {
+      setSelectedHealthProblem('');
       setHealthDetails('');
+    } else {
+      setSelectedHealthProblem(healthProblemId);
+      // Clear health details when switching to "No" option
+      if (healthProblemId === 'no-problems') {
+        setHealthDetails('');
+      }
     }
   };
 
@@ -41,7 +47,9 @@ const HealthProblemsScreen: React.FC<HealthProblemsScreenProps> = ({
     onContinue(selectedHealthProblem);
   };
 
-  const isContinueDisabled = !selectedHealthProblem || (selectedHealthProblem === 'has-problems' && !healthDetails.trim());
+  // Continue is enabled when any option is selected (No or Yes)
+  // If "Yes" is selected, health details are optional
+  const isContinueDisabled = !selectedHealthProblem;
 
   const progressPercentage = (currentStep / totalSteps) * 100;
 
@@ -123,7 +131,7 @@ const HealthProblemsScreen: React.FC<HealthProblemsScreenProps> = ({
         {/* Health Problem Options */}
         {!loading && !error && (
           <div className="flex-1 overflow-y-auto">
-            <div className="space-y-4 pb-4">
+            <div className="flex flex-col items-center space-y-4 pb-4">
               {healthProblems.map((healthProblem) => (
                 <HealthProblemCard
                   key={healthProblem.id}
@@ -135,8 +143,8 @@ const HealthProblemsScreen: React.FC<HealthProblemsScreenProps> = ({
               
               {/* Health Details Text Area - Only show when "Yes, I have" is selected */}
               {selectedHealthProblem === 'has-problems' && (
-                <div className="mt-4">
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                <div className="mt-4 w-full max-w-sm">
+                  <label className="block text-sm font-medium text-gray-700 mb-2 text-center">
                     Tell us more about your condition
                   </label>
                   <div className="relative">
@@ -191,19 +199,25 @@ const HealthProblemCard: React.FC<HealthProblemCardProps> = ({
 }) => {
   return (
     <div 
-      className={`w-full rounded-xl p-4 cursor-pointer transition-all duration-200 hover:scale-[1.02] border-2 ${
-        isSelected 
-          ? 'bg-yellow-100 border-yellow-400' 
-          : 'bg-white border-gray-200'
-      }`}
+      className="cursor-pointer transition-all duration-200 hover:scale-[1.02] border"
+      style={{
+        width: '327px',
+        height: '44px',
+        borderRadius: '14px',
+        paddingTop: '12px',
+        paddingRight: '18px',
+        paddingBottom: '12px',
+        paddingLeft: '18px',
+        borderWidth: '1px',
+        background: isSelected ? '#F5BA41' : '#FFFFFF',
+        borderColor: isSelected ? '#E6B13B' : '#E5E7EB'
+      }}
       onClick={onSelect}
     >
-      <div className="flex items-center justify-between">
-        <div className="flex items-center space-x-4">
+      <div className="flex items-center justify-between h-full">
+        <div className="flex items-center" style={{ gap: '4px' }}>
           <div>
-            <h3 className={`font-semibold text-lg ${
-              isSelected ? 'text-gray-900' : 'text-gray-900'
-            }`}>
+            <h3 className="font-semibold text-lg text-gray-900">
               {healthProblem.name}
             </h3>
           </div>

@@ -3,6 +3,7 @@ import { useImprovementAreas } from '../hooks/useImprovementAreas';
 import { ImprovementArea } from '../services/improvementApi';
 import LoadingSpinner from './LoadingSpinner';
 import ErrorMessage from './ErrorMessage';
+import DynamicContentCard from './DynamicContentCard';
 
 interface ImprovementAreasScreenProps {
   onContinue: (selectedAreas: string[]) => void;
@@ -118,12 +119,13 @@ const ImprovementAreasScreen: React.FC<ImprovementAreasScreenProps> = ({
           <div className="flex-1 overflow-hidden">
             <div className="flex overflow-x-auto space-x-4 pb-4 scrollbar-hide">
               {improvementAreas.map((area) => (
-                <ImprovementAreaCard
-                  key={area.id}
-                  area={area}
-                  isSelected={selectedAreas.includes(area.id)}
-                  onToggle={() => handleAreaToggle(area.id)}
-                />
+                <div key={area.id} className="flex-shrink-0">
+                  <ImprovementAreaCard
+                    area={area}
+                    isSelected={selectedAreas.includes(area.id)}
+                    onToggle={() => handleAreaToggle(area.id)}
+                  />
+                </div>
               ))}
             </div>
           </div>
@@ -136,6 +138,10 @@ const ImprovementAreasScreen: React.FC<ImprovementAreasScreenProps> = ({
           onClick={handleContinue}
           disabled={selectedAreas.length === 0}
           className="w-full bg-accent-blue hover:bg-blue-600 disabled:bg-gray-300 disabled:cursor-not-allowed text-white font-semibold py-4 px-6 rounded-button transition-colors duration-200"
+          style={{
+            border: '1px solid #1B85F3',
+            boxShadow: '0px 4px 20px -2px #32324705'
+          }}
         >
           Continue
         </button>
@@ -162,11 +168,20 @@ const ImprovementAreaCard: React.FC<ImprovementAreaCardProps> = ({
 }) => {
   return (
     <div 
-      className={`flex-shrink-0 w-80 rounded-xl p-6 cursor-pointer transition-all duration-200 hover:scale-[1.02] border-2 ${
-        isSelected 
-          ? 'bg-blue-50 border-accent-blue' 
-          : 'bg-white border-gray-200'
-      }`}
+      className="flex-shrink-0 cursor-pointer transition-all duration-200 hover:scale-[1.02] border"
+      style={{
+        width: '280px',
+        height: '381px',
+        borderRadius: '16px',
+        paddingTop: '20px',
+        paddingRight: '16px',
+        paddingBottom: '20px',
+        paddingLeft: '16px',
+        borderWidth: '1px',
+        background: '#FFFFFF',
+        boxShadow: '0px 0px 5px 0px #0C1A4B0A',
+        borderColor: isSelected ? '#1B85F3' : '#E5E7EB'
+      }}
       onClick={onToggle}
     >
       <div className="flex flex-col h-full">

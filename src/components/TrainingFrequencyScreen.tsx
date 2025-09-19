@@ -82,37 +82,96 @@ const TrainingFrequencyScreen: React.FC<TrainingFrequencyScreenProps> = ({
 
       {/* Main Content */}
       <div className="px-6 flex-1 flex flex-col">
-        <h2 className="text-2xl font-bold mb-2 leading-tight text-gray-900 text-center">
-          How often do you train?
-        </h2>
-        <p className="text-gray-600 text-sm mb-8 text-center">
-          Select what fits best:
-        </p>
+        {/* Content Container */}
+        <div 
+          className="flex flex-col items-start mx-auto"
+          style={{
+            width: '327px',
+            height: '312px',
+            gap: '24px',
+            padding: '0px'
+          }}
+        >
+          {/* Title and Body */}
+          <div 
+            className="flex flex-col items-center"
+            style={{
+              width: '327px',
+              height: '64px',
+              gap: '10px',
+              padding: '0px'
+            }}
+          >
+            {/* Title */}
+            <h2 
+              className="flex items-end"
+              style={{
+                width: '327px',
+                height: '34px',
+                fontFamily: 'Plus Jakarta Sans',
+                fontStyle: 'normal',
+                fontWeight: 700,
+                fontSize: '26px',
+                lineHeight: '34px',
+                color: '#39434F',
+                display: 'flex',
+                alignItems: 'flex-end'
+              }}
+            >
+              How often do you train?
+            </h2>
+            
+            {/* Body */}
+            <p 
+              className="flex items-end"
+              style={{
+                width: '327px',
+                height: '20px',
+                fontFamily: 'Plus Jakarta Sans',
+                fontStyle: 'normal',
+                fontWeight: 500,
+                fontSize: '14px',
+                lineHeight: '20px',
+                color: '#808B9A',
+                display: 'flex',
+                alignItems: 'flex-end'
+              }}
+            >
+              Select what fits best:
+            </p>
+          </div>
 
-        {/* Loading State */}
-        {loading && (
-          <div className="flex-1 flex items-center justify-center">
-            <div className="text-center">
-              <LoadingSpinner size="lg" className="mb-4" />
-              <p className="text-gray-600">Loading frequencies...</p>
+          {/* Loading State */}
+          {loading && (
+            <div className="flex-1 flex items-center justify-center">
+              <div className="text-center">
+                <LoadingSpinner size="lg" className="mb-4" />
+                <p className="text-gray-600">Loading frequencies...</p>
+              </div>
             </div>
-          </div>
-        )}
+          )}
 
-        {/* Error State */}
-        {error && (
-          <div className="mb-6">
-            <ErrorMessage 
-              message={error} 
-              onRetry={refetch}
-            />
-          </div>
-        )}
+          {/* Error State */}
+          {error && (
+            <div className="mb-6">
+              <ErrorMessage 
+                message={error} 
+                onRetry={refetch}
+              />
+            </div>
+          )}
 
-        {/* Frequency Options */}
-        {!loading && !error && (
-          <div className="flex-1 overflow-y-auto">
-            <div className="space-y-4 pb-4">
+          {/* Options */}
+          {!loading && !error && (
+            <div 
+              className="flex flex-col items-start"
+              style={{
+                width: '327px',
+                height: '224px',
+                gap: '16px',
+                padding: '0px'
+              }}
+            >
               {frequencies.map((frequency) => (
                 <FrequencyCard
                   key={frequency.id}
@@ -122,8 +181,8 @@ const TrainingFrequencyScreen: React.FC<TrainingFrequencyScreenProps> = ({
                 />
               ))}
             </div>
-          </div>
-        )}
+          )}
+        </div>
       </div>
 
       {/* Continue Button */}
@@ -158,32 +217,52 @@ const FrequencyCard: React.FC<FrequencyCardProps> = ({
 }) => {
   return (
     <div 
-      className={`w-full rounded-xl p-4 cursor-pointer transition-all duration-200 hover:scale-[1.02] border-2 ${
-        isSelected 
-          ? 'bg-accent-blue border-accent-blue' 
-          : 'bg-white border-gray-200'
-      }`}
+      className="cursor-pointer transition-all duration-200 hover:scale-[1.02]"
+      style={{
+        boxSizing: 'border-box',
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+        padding: '12px 18px',
+        gap: '4px',
+        width: '327px',
+        height: '44px',
+        background: '#FFFFFF',
+        border: '1px solid #D9DFE6',
+        borderRadius: '14px'
+      }}
       onClick={onSelect}
     >
-      <div className="flex items-center justify-between">
-        <div className="flex items-center space-x-4">
-          <div>
-            <h3 className={`font-semibold text-lg ${
-              isSelected ? 'text-white' : 'text-gray-900'
-            }`}>
-              {frequency.name}
-            </h3>
-          </div>
-        </div>
-        <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${
-          isSelected 
-            ? 'border-white bg-white' 
-            : 'border-gray-300'
-        }`}>
-          {isSelected && (
-            <div className="w-2 h-2 bg-accent-blue rounded-full"></div>
-          )}
-        </div>
+      {/* Text */}
+      <div 
+        className="flex items-center"
+        style={{
+          width: 'auto',
+          height: '20px',
+          fontFamily: 'Plus Jakarta Sans',
+          fontStyle: 'normal',
+          fontWeight: 500,
+          fontSize: '14px',
+          lineHeight: '20px',
+          display: 'flex',
+          alignItems: 'center',
+          textAlign: 'center',
+          color: '#808B9A'
+        }}
+      >
+        {frequency.name}
+      </div>
+      
+      {/* Radio Button */}
+      <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ml-auto ${
+        isSelected 
+          ? 'border-accent-blue bg-accent-blue' 
+          : 'border-gray-300'
+      }`}>
+        {isSelected && (
+          <div className="w-2 h-2 bg-white rounded-full"></div>
+        )}
       </div>
     </div>
   );

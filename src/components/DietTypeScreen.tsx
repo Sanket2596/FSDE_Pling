@@ -74,7 +74,7 @@ const DietTypeScreen: React.FC<DietTypeScreenProps> = ({
         {/* Progress Bar */}
         <div className="w-full bg-gray-200 rounded-full h-1 mb-8 overflow-hidden">
           <div 
-            className="bg-yellow-400 h-1 rounded-full transition-all duration-300"
+            className="bg-accent-orange h-1 rounded-full transition-all duration-300"
             style={{ width: `${Math.min(progressPercentage, 100)}%` }}
           ></div>
         </div>
@@ -82,37 +82,96 @@ const DietTypeScreen: React.FC<DietTypeScreenProps> = ({
 
       {/* Main Content */}
       <div className="px-6 flex-1 flex flex-col">
-        <h2 className="text-2xl font-bold mb-2 leading-tight text-gray-900 text-center">
-          What's your diet type?
-        </h2>
-        <p className="text-gray-600 text-sm mb-8 text-center">
-          Select what fits best:
-        </p>
+        {/* Content Container */}
+        <div 
+          className="flex flex-col items-start mx-auto"
+          style={{
+            width: '327px',
+            height: '312px',
+            gap: '24px',
+            padding: '0px'
+          }}
+        >
+          {/* Title and Body */}
+          <div 
+            className="flex flex-col items-center"
+            style={{
+              width: '327px',
+              height: '64px',
+              gap: '10px',
+              padding: '0px'
+            }}
+          >
+            {/* Title */}
+            <h2 
+              className="flex items-end"
+              style={{
+                width: '327px',
+                height: '34px',
+                fontFamily: 'Plus Jakarta Sans',
+                fontStyle: 'normal',
+                fontWeight: 700,
+                fontSize: '26px',
+                lineHeight: '34px',
+                color: '#39434F',
+                display: 'flex',
+                alignItems: 'flex-end'
+              }}
+            >
+              What's your diet type?
+            </h2>
+            
+            {/* Body */}
+            <p 
+              className="flex items-end"
+              style={{
+                width: '327px',
+                height: '20px',
+                fontFamily: 'Plus Jakarta Sans',
+                fontStyle: 'normal',
+                fontWeight: 500,
+                fontSize: '14px',
+                lineHeight: '20px',
+                color: '#808B9A',
+                display: 'flex',
+                alignItems: 'flex-end'
+              }}
+            >
+              Select what fits best:
+            </p>
+          </div>
 
-        {/* Loading State */}
-        {loading && (
-          <div className="flex-1 flex items-center justify-center">
-            <div className="text-center">
-              <LoadingSpinner size="lg" className="mb-4" />
-              <p className="text-gray-600">Loading diet types...</p>
+          {/* Loading State */}
+          {loading && (
+            <div className="flex-1 flex items-center justify-center">
+              <div className="text-center">
+                <LoadingSpinner size="lg" className="mb-4" />
+                <p className="text-gray-600">Loading diet types...</p>
+              </div>
             </div>
-          </div>
-        )}
+          )}
 
-        {/* Error State */}
-        {error && (
-          <div className="mb-6">
-            <ErrorMessage 
-              message={error} 
-              onRetry={refetch}
-            />
-          </div>
-        )}
+          {/* Error State */}
+          {error && (
+            <div className="mb-6">
+              <ErrorMessage 
+                message={error} 
+                onRetry={refetch}
+              />
+            </div>
+          )}
 
-        {/* Diet Type Options */}
-        {!loading && !error && (
-          <div className="flex-1 overflow-y-auto">
-            <div className="space-y-4 pb-4">
+          {/* Options */}
+          {!loading && !error && (
+            <div 
+              className="flex flex-col items-start"
+              style={{
+                width: '327px',
+                height: '224px',
+                gap: '16px',
+                padding: '0px'
+              }}
+            >
               {dietTypes.map((dietType) => (
                 <DietTypeCard
                   key={dietType.id}
@@ -122,8 +181,8 @@ const DietTypeScreen: React.FC<DietTypeScreenProps> = ({
                 />
               ))}
             </div>
-          </div>
-        )}
+          )}
+        </div>
       </div>
 
       {/* Continue Button */}
@@ -131,7 +190,7 @@ const DietTypeScreen: React.FC<DietTypeScreenProps> = ({
         <button
           onClick={handleContinue}
           disabled={!selectedDietType}
-          className="w-full bg-accent-blue hover:bg-blue-600 disabled:bg-gray-300 disabled:cursor-not-allowed text-white font-semibold py-4 px-6 rounded-button transition-colors duration-200"
+          className="w-full bg-accent-blue hover:bg-blue-600 disabled:bg-gray-600 disabled:cursor-not-allowed text-white font-semibold py-4 px-6 rounded-button transition-colors duration-200"
         >
           Continue
         </button>
@@ -158,37 +217,123 @@ const DietTypeCard: React.FC<DietTypeCardProps> = ({
 }) => {
   return (
     <div 
-      className={`w-full rounded-xl p-4 cursor-pointer transition-all duration-200 hover:scale-[1.02] border-2 ${
-        isSelected 
-          ? 'bg-yellow-100 border-yellow-400' 
-          : 'bg-white border-gray-200'
-      }`}
+      className="cursor-pointer transition-all duration-200 hover:scale-[1.02]"
+      style={{
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center',
+        padding: '16px 20px',
+        gap: '7.5px',
+        width: '327px',
+        height: '76px',
+        background: isSelected ? '#F5BA41' : '#FFFFFF',
+        border: isSelected ? '2px solid #E6B13B' : '1px solid #F7FAFC',
+        boxShadow: '0px 0px 3.75px rgba(12, 26, 75, 0.05), 0px 3px 15px -1.5px rgba(50, 50, 71, 0.02)',
+        borderRadius: '14px'
+      }}
       onClick={onSelect}
     >
-      <div className="flex items-center justify-between">
-        <div className="flex-1">
-          <h3 className={`font-semibold text-lg mb-1 ${
-            isSelected ? 'text-gray-900' : 'text-gray-900'
-          }`}>
+      {/* Text */}
+      <div 
+        className="flex flex-row items-center"
+        style={{
+          padding: '0px',
+          gap: '6px',
+          width: '287px',
+          height: '44px'
+        }}
+      >
+        {/* Frame 280039 */}
+        <div 
+          className="flex flex-col items-start"
+          style={{
+            padding: '0px',
+            gap: '6px',
+            width: '261px',
+            height: '44px'
+          }}
+        >
+          {/* Title */}
+          <div 
+            className="flex items-end"
+            style={{
+              width: 'auto',
+              height: '20px',
+              fontFamily: 'Plus Jakarta Sans',
+              fontWeight: isSelected ? 700 : 600,
+              fontSize: '14px',
+              lineHeight: '20px',
+              color: isSelected ? '#FFFFFF' : '#39434F'
+            }}
+          >
             {dietType.name}
-          </h3>
-          <p className={`text-sm ${
-            isSelected ? 'text-gray-700' : 'text-gray-600'
-          }`}>
+          </div>
+          
+          {/* Body */}
+          <div 
+            className="flex items-end"
+            style={{
+              width: 'auto',
+              height: '18px',
+              fontFamily: 'Plus Jakarta Sans',
+              fontWeight: 500,
+              fontSize: '13px',
+              lineHeight: '18px',
+              color: isSelected ? '#FFFFFF' : '#808B9A',
+              opacity: isSelected ? 0.8 : 1
+            }}
+          >
             {dietType.description}
-          </p>
+          </div>
         </div>
-        <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ml-4 ${
-          isSelected 
-            ? 'border-yellow-500 bg-yellow-500' 
-            : 'border-gray-300'
-        }`}>
-          {isSelected && (
-            <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
-              <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-            </svg>
-          )}
-        </div>
+      </div>
+      
+      {/* Check Icon */}
+      <div 
+        style={{
+          width: '20px',
+          height: '20px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          position: 'relative'
+        }}
+      >
+        {isSelected ? (
+          <svg 
+            width="20" 
+            height="20" 
+            viewBox="0 0 20 20" 
+            fill="none"
+          >
+            {/* White circle background */}
+            <circle 
+              cx="10" 
+              cy="10" 
+              r="8" 
+              fill="#FFFFFF" 
+              stroke="#FFFFFF" 
+              strokeWidth="1.5"
+            />
+            {/* Checkmark */}
+            <path 
+              d="M6 10L8.5 12.5L14 7" 
+              stroke="#F5BA41" 
+              strokeWidth="2" 
+              strokeLinecap="round" 
+              strokeLinejoin="round"
+            />
+          </svg>
+        ) : (
+          <div 
+            style={{
+              width: '20px',
+              height: '20px',
+              border: '2px solid #D9DFE6',
+              borderRadius: '50%'
+            }}
+          ></div>
+        )}
       </div>
     </div>
   );

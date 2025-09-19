@@ -3,57 +3,61 @@ export interface ImprovementArea {
   title: string;
   description: string;
   image: string;
+  price?: number;
+  status?: 'available' | 'unavailable' | 'premium';
 }
 
 export class ImprovementApiService {
-  // Improvement areas for Screen 8
-  private static improvementAreas: ImprovementArea[] = [
-    {
-      id: 'reduce-stress',
-      title: 'Reduce stress',
-      description: 'Sports help you manage stress. Exercise causes your body to release endorphins, the chemicals that relieve pain and stress.',
-      image: '🧘‍♀️'
-    },
-    {
-      id: 'lose-weight',
-      title: 'Lose weight',
-      description: 'Regular exercise helps you burn calories and build muscle, leading to healthy weight loss and improved body composition.',
-      image: '⚖️'
-    },
-    {
-      id: 'build-muscle',
-      title: 'Build muscle',
-      description: 'Strength training and resistance exercises help you build lean muscle mass and increase overall strength.',
-      image: '💪'
-    },
-    {
-      id: 'improve-endurance',
-      title: 'Improve endurance',
-      description: 'Cardio exercises and endurance training improve your cardiovascular health and stamina for daily activities.',
-      image: '🏃‍♂️'
-    },
-    {
-      id: 'better-sleep',
-      title: 'Better sleep',
-      description: 'Regular physical activity helps regulate your sleep patterns and improves the quality of your rest.',
-      image: '😴'
-    },
-    {
-      id: 'mental-health',
-      title: 'Mental health',
-      description: 'Exercise releases endorphins and reduces anxiety, depression, and stress while boosting self-esteem.',
-      image: '🧠'
-    }
+  private static baseUrl = 'https://baconipsum.com/api';
+  private static improvementTitles = [
+    'Reduce stress', 'Lose weight', 'Build muscle', 'Improve endurance',
+    'Better sleep', 'Mental health', 'Increase flexibility', 'Boost energy',
+    'Improve focus', 'Build confidence', 'Reduce anxiety', 'Increase strength'
   ];
+  private static improvementEmojis = ['🧘‍♀️', '⚖️', '💪', '🏃‍♂️', '😴', '🧠', '🎯', '🌟', '🔥', '💎', '🤸‍♀️', '💫'];
 
   static async getImprovementAreas(): Promise<ImprovementArea[]> {
     try {
-      // Simulate API delay
-      await new Promise(resolve => setTimeout(resolve, 500));
-      return ImprovementApiService.improvementAreas;
+      // Fetch dynamic content from Bacon Ipsum API
+      const response = await fetch(`${this.baseUrl}/?type=all-meat&paras=6&format=json`);
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      const baconContent: string[] = await response.json();
+      
+      // Transform Bacon Ipsum content into improvement areas
+      return this.transformBaconToImprovements(baconContent);
     } catch (error) {
       console.error("Error fetching improvement areas:", error);
       throw new Error("Failed to fetch improvement areas data.");
     }
+  }
+
+  // Helper method to transform Bacon Ipsum content into improvement areas
+  private static transformBaconToImprovements(baconContent: string[]): ImprovementArea[] {
+    const improvements: ImprovementArea[] = [];
+    
+    baconContent.forEach((paragraph, index) => {
+      // Use proper improvement titles instead of Bacon Ipsum text
+      const improvementTitle = this.improvementTitles[index % this.improvementTitles.length];
+      
+      // Generate random data for each improvement area
+      const randomEmoji = this.improvementEmojis[index % this.improvementEmojis.length];
+      const randomPrice = Math.floor(Math.random() * 150) + 30;
+      const randomStatus = ['available', 'unavailable', 'premium'][Math.floor(Math.random() * 3)] as 'available' | 'unavailable' | 'premium';
+      
+      improvements.push({
+        id: `improvement-${index}`,
+        title: improvementTitle,
+        description: paragraph.substring(0, 120) + '...', // Use Bacon Ipsum for description
+        image: randomEmoji,
+        price: randomPrice,
+        status: randomStatus
+      });
+    });
+    
+    return improvements;
   }
 }

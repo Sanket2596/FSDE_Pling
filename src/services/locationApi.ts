@@ -2,52 +2,52 @@ export interface TrainingLocation {
   id: string;
   name: string;
   icon: string;
-  description?: string;
+  description: string;
+  price?: number;
+  status?: 'available' | 'unavailable' | 'premium';
 }
 
 export class LocationApiService {
-  // Training location options for Screen 4
-  private static trainingLocations: TrainingLocation[] = [
-    {
-      id: 'outdoor',
-      name: 'Outdoor',
-      icon: '🌿',
-      description: 'Train in nature and fresh air'
-    },
-    {
-      id: 'indoor',
-      name: 'Indoor',
-      icon: '🏢',
-      description: 'Train in controlled environment'
-    },
-    {
-      id: 'home',
-      name: 'Home',
-      icon: '🏠',
-      description: 'Train in the comfort of your home'
-    },
-    {
-      id: 'gym',
-      name: 'At the gym',
-      icon: '🏋️‍♀️',
-      description: 'Train at a fitness facility'
-    },
-    {
-      id: 'park',
-      name: 'In the park',
-      icon: '🌳',
-      description: 'Train in outdoor park settings'
-    }
+  private static baseUrl = 'https://baconipsum.com/api';
+  private static locationData = [
+    { id: 'outdoor', name: 'Outdoor', icon: '🌱' },
+    { id: 'indoor', name: 'Indoor', icon: '🏢' },
+    { id: 'home', name: 'Home', icon: '🏠' },
+    { id: 'gym', name: 'At the gym', icon: '🏋️‍♂️' },
+    { id: 'park', name: 'In the park', icon: '🌳' }
   ];
 
   static async getTrainingLocations(): Promise<TrainingLocation[]> {
     try {
-      // Simulate API delay
-      await new Promise(resolve => setTimeout(resolve, 500));
-      return this.trainingLocations;
+      const response = await fetch(`${this.baseUrl}/?type=all-meat&paras=5&format=json`);
+      const baconContent: string[] = await response.json();
+      
+      return this.transformBaconToLocations(baconContent);
     } catch (error) {
       console.error('Error fetching training locations:', error);
-      throw new Error('Failed to fetch training locations. Please try again later.');
+      throw new Error('Failed to fetch training locations');
     }
+  }
+
+  private static transformBaconToLocations(baconContent: string[]): TrainingLocation[] {
+    const locations: TrainingLocation[] = [];
+    
+    baconContent.forEach((paragraph, index) => {
+      const locationInfo = this.locationData[index % this.locationData.length];
+      
+      const randomPrice = Math.floor(Math.random() * 100) + 20;
+      const randomStatus = ['available', 'unavailable', 'premium'][Math.floor(Math.random() * 3)] as 'available' | 'unavailable' | 'premium';
+      
+      locations.push({
+        id: locationInfo.id,
+        name: locationInfo.name,
+        icon: locationInfo.icon,
+        description: paragraph.substring(0, 80) + '...',
+        price: randomPrice,
+        status: randomStatus
+      });
+    });
+    
+    return locations;
   }
 }

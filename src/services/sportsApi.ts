@@ -6,134 +6,46 @@ export interface Sport {
   color: string;
   description?: string;
   category?: string;
+  price?: number;
+  status?: 'available' | 'unavailable' | 'premium';
 }
 
 export class SportsApiService {
-  private static baseUrl = 'https://www.thesportsdb.com/api/v1/json/3';
-
-  // Mock sports data for demonstration - in a real app, this would come from an API
-  private static mockSports: Sport[] = [
-    {
-      id: 'basketball',
-      name: 'Basketball',
-      practices: 4,
-      image: '🏀',
-      color: 'bg-orange-500',
-      description: 'Fast-paced team sport with hoops and dribbling',
-      category: 'Team Sports'
-    },
-    {
-      id: 'football',
-      name: 'Football',
-      practices: 6,
-      image: '⚽',
-      color: 'bg-black',
-      description: 'The beautiful game with goals and teamwork',
-      category: 'Team Sports'
-    },
-    {
-      id: 'tennis',
-      name: 'Tennis',
-      practices: 2,
-      image: '🎾',
-      color: 'bg-green-500',
-      description: 'Racket sport with singles and doubles play',
-      category: 'Racket Sports'
-    },
-    {
-      id: 'swimming',
-      name: 'Swimming',
-      practices: 8,
-      image: '🏊‍♂️',
-      color: 'bg-blue-500',
-      description: 'Water-based sport for all fitness levels',
-      category: 'Water Sports'
-    },
-    {
-      id: 'running',
-      name: 'Running',
-      practices: 12,
-      image: '🏃‍♂️',
-      color: 'bg-red-500',
-      description: 'Cardio exercise for endurance and fitness',
-      category: 'Cardio'
-    },
-    {
-      id: 'cycling',
-      name: 'Cycling',
-      practices: 5,
-      image: '🚴‍♂️',
-      color: 'bg-yellow-500',
-      description: 'Low-impact cardio on two wheels',
-      category: 'Cardio'
-    },
-    {
-      id: 'yoga',
-      name: 'Yoga',
-      practices: 10,
-      image: '🧘‍♀️',
-      color: 'bg-purple-500',
-      description: 'Mind-body practice for flexibility and strength',
-      category: 'Mind & Body'
-    },
-    {
-      id: 'boxing',
-      name: 'Boxing',
-      practices: 3,
-      image: '🥊',
-      color: 'bg-gray-600',
-      description: 'Combat sport for fitness and self-defense',
-      category: 'Combat Sports'
-    },
-    {
-      id: 'volleyball',
-      name: 'Volleyball',
-      practices: 4,
-      image: '🏐',
-      color: 'bg-orange-400',
-      description: 'Team sport with net and ball',
-      category: 'Team Sports'
-    },
-    {
-      id: 'badminton',
-      name: 'Badminton',
-      practices: 3,
-      image: '🏸',
-      color: 'bg-green-400',
-      description: 'Fast-paced racket sport',
-      category: 'Racket Sports'
-    },
-    {
-      id: 'golf',
-      name: 'Golf',
-      practices: 2,
-      image: '⛳',
-      color: 'bg-green-600',
-      description: 'Precision sport with clubs and balls',
-      category: 'Precision Sports'
-    },
-    {
-      id: 'hiking',
-      name: 'Hiking',
-      practices: 6,
-      image: '🥾',
-      color: 'bg-brown-500',
-      description: 'Outdoor activity for nature lovers',
-      category: 'Outdoor'
-    }
+  private static baseUrl = 'https://baconipsum.com/api';
+  private static sportsNames = [
+    'Basketball', 'Football', 'Tennis', 'Swimming', 'Running', 'Cycling',
+    'Yoga', 'Boxing', 'Volleyball', 'Badminton', 'Golf', 'Hiking',
+    'Weightlifting', 'Gymnastics', 'Surfing', 'Archery', 'Soccer', 'Baseball',
+    'Hockey', 'Cricket', 'Rugby', 'Squash', 'Table Tennis', 'Martial Arts'
+  ];
+  private static sportsCategories = [
+    'Team Sports', 'Racket Sports', 'Water Sports', 'Cardio', 
+    'Mind & Body', 'Combat Sports', 'Precision Sports', 'Outdoor'
+  ];
+  private static sportsEmojis = [
+    '🏀', '⚽', '🎾', '🏊‍♂️', '🏃‍♂️', '🚴‍♂️', '🧘‍♀️', '🥊', 
+    '🏐', '🏸', '⛳', '🥾', '🏋️‍♂️', '🤸‍♀️', '🏄‍♂️', '🎯',
+    '⚾', '🏒', '🏏', '🏈', '🎾', '🏓', '🥋', '🏹'
+  ];
+  private static colors = [
+    'bg-orange-500', 'bg-black', 'bg-green-500', 'bg-blue-500', 
+    'bg-red-500', 'bg-yellow-500', 'bg-purple-500', 'bg-gray-600',
+    'bg-orange-400', 'bg-green-400', 'bg-green-600', 'bg-brown-500'
   ];
 
   static async getSports(): Promise<Sport[]> {
     try {
-      // Simulate API delay
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      // Fetch dynamic content from Bacon Ipsum API
+      const response = await fetch(`${this.baseUrl}/?type=all-meat&paras=12&format=json`);
       
-      // In a real application, you would make an actual API call here
-      // const response = await fetch(`${this.baseUrl}/all_sports.php`);
-      // const data = await response.json();
-      // return this.transformApiData(data);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
       
-      return this.mockSports;
+      const baconContent: string[] = await response.json();
+      
+      // Transform Bacon Ipsum content into sports data
+      return this.transformBaconToSports(baconContent);
     } catch (error) {
       console.error('Error fetching sports:', error);
       throw new Error('Failed to fetch sports data. Please try again later.');
@@ -163,10 +75,35 @@ export class SportsApiService {
     }
   }
 
-  // Helper method to transform API data (for when using real API)
-  private static transformApiData(apiData: any): Sport[] {
-    // This would transform the actual API response to our Sport interface
-    // For now, we're using mock data
-    return this.mockSports;
+  // Helper method to transform Bacon Ipsum content into sports data
+  private static transformBaconToSports(baconContent: string[]): Sport[] {
+    const sports: Sport[] = [];
+    
+    baconContent.forEach((paragraph, index) => {
+      // Use proper sports names instead of Bacon Ipsum text
+      const sportName = this.sportsNames[index % this.sportsNames.length];
+      
+      // Generate random data for each sport
+      const randomCategory = this.sportsCategories[index % this.sportsCategories.length];
+      const randomEmoji = this.sportsEmojis[index % this.sportsEmojis.length];
+      const randomColor = this.colors[index % this.colors.length];
+      const randomPractices = Math.floor(Math.random() * 10) + 1;
+      const randomPrice = Math.floor(Math.random() * 200) + 50;
+      const randomStatus = ['available', 'unavailable', 'premium'][Math.floor(Math.random() * 3)] as 'available' | 'unavailable' | 'premium';
+      
+      sports.push({
+        id: `sport-${index}`,
+        name: sportName,
+        practices: randomPractices,
+        image: randomEmoji,
+        color: randomColor,
+        description: paragraph.substring(0, 100) + '...', // Use Bacon Ipsum for description
+        category: randomCategory,
+        price: randomPrice,
+        status: randomStatus
+      });
+    });
+    
+    return sports;
   }
 }

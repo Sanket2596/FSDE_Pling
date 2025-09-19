@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useWorkoutActivities } from '../hooks/useWorkoutActivities';
 import { WorkoutActivity } from '../services/workoutApi';
 import LoadingSpinner from './LoadingSpinner';
@@ -24,9 +24,14 @@ const WorkoutActivityScreen: React.FC<WorkoutActivityScreenProps> = ({
   const [selectedActivities, setSelectedActivities] = useState<string[]>(initialSelectedActivities);
   const { activities, loading, error, refetch } = useWorkoutActivities();
 
+  // Sync state with prop changes
+  useEffect(() => {
+    setSelectedActivities(initialSelectedActivities);
+  }, [initialSelectedActivities]);
+
   const handleActivityToggle = (activityId: string) => {
     setSelectedActivities(prev => 
-      prev.includes(activityId) 
+      prev.includes(activityId)
         ? prev.filter(id => id !== activityId)
         : [...prev, activityId]
     );
@@ -76,58 +81,146 @@ const WorkoutActivityScreen: React.FC<WorkoutActivityScreenProps> = ({
         </div>
 
         {/* Progress Bar */}
-        <div className="w-full bg-gray-200 rounded-full h-1 mb-8">
+        <div className="w-full bg-gray-200 rounded-full h-1 mb-8 overflow-hidden">
           <div 
             className="bg-accent-orange h-1 rounded-full transition-all duration-300"
-            style={{ width: `${progressPercentage}%` }}
+            style={{ width: `${Math.min(progressPercentage, 100)}%` }}
           ></div>
         </div>
       </div>
 
       {/* Main Content */}
       <div className="px-6 flex-1 flex flex-col">
-        <h2 className="text-2xl font-bold mb-2 leading-tight text-gray-900">
-          Which sport activity gives the best workout?
-        </h2>
-        <p className="text-gray-600 text-sm mb-8">
-          Select all that applies:
-        </p>
+        {/* Content Container */}
+        <div 
+          className="flex flex-col items-start mx-auto"
+          style={{
+            width: '327px',
+            height: '312px',
+            gap: '24px',
+            padding: '0px'
+          }}
+        >
+          {/* Title and Body */}
+          <div 
+            className="flex flex-col items-center"
+            style={{
+              width: '327px',
+              height: '98px',
+              gap: '10px',
+              padding: '0px'
+            }}
+          >
+            {/* Title */}
+            <h2 
+              className="flex items-end"
+              style={{
+                width: '327px',
+                height: '68px',
+                fontFamily: 'Plus Jakarta Sans',
+                fontStyle: 'normal',
+                fontWeight: 700,
+                fontSize: '26px',
+                lineHeight: '34px',
+                color: '#39434F',
+                display: 'flex',
+                alignItems: 'flex-end'
+              }}
+            >
+              Which sport activity gives the best workout?
+            </h2>
+            
+            {/* Body */}
+            <p 
+              className="flex items-end"
+              style={{
+                width: '327px',
+                height: '20px',
+                fontFamily: 'Plus Jakarta Sans',
+                fontStyle: 'normal',
+                fontWeight: 500,
+                fontSize: '14px',
+                lineHeight: '20px',
+                color: '#808B9A',
+                display: 'flex',
+                alignItems: 'flex-end'
+              }}
+            >
+              Select all that applies:
+            </p>
+          </div>
 
-        {/* Loading State */}
-        {loading && (
-          <div className="flex-1 flex items-center justify-center">
-            <div className="text-center">
-              <LoadingSpinner size="lg" className="mb-4" />
-              <p className="text-gray-600">Loading activities...</p>
+          {/* Loading State */}
+          {loading && (
+            <div className="flex-1 flex items-center justify-center">
+              <div className="text-center">
+                <LoadingSpinner size="lg" className="mb-4" />
+                <p className="text-gray-600">Loading activities...</p>
+              </div>
             </div>
-          </div>
-        )}
+          )}
 
-        {/* Error State */}
-        {error && (
-          <div className="mb-6">
-            <ErrorMessage 
-              message={error} 
-              onRetry={refetch}
-            />
-          </div>
-        )}
-
-        {/* Activity Options */}
-        {!loading && !error && (
-          <div className="flex-1 overflow-y-auto">
-            <div className="grid grid-cols-2 gap-4 pb-4">
-              {activities.map((activity) => (
-                <WorkoutActivityCard
-                  key={activity.id}
-                  activity={activity}
-                  isSelected={selectedActivities.includes(activity.id)}
-                  onToggle={() => handleActivityToggle(activity.id)}
-                />
-              ))}
+          {/* Error State */}
+          {error && (
+            <div className="mb-6">
+              <ErrorMessage 
+                message={error} 
+                onRetry={refetch}
+              />
             </div>
-          </div>
-        )}
+          )}
+
+          {/* Options */}
+          {!loading && !error && (
+            <div 
+              className="flex flex-col items-start"
+              style={{
+                width: '327px',
+                height: '104px',
+                gap: '16px',
+                padding: '0px'
+              }}
+            >
+              {/* Tags row */}
+              <div 
+                className="flex flex-row items-start"
+                style={{
+                  width: '327px',
+                  height: '44px',
+                  gap: '12px'
+                }}
+              >
+                {activities.slice(0, 2).map((activity) => (
+                  <WorkoutActivityCard
+                    key={activity.id}
+                    activity={activity}
+                    isSelected={selectedActivities.includes(activity.id)}
+                    onToggle={() => handleActivityToggle(activity.id)}
+                  />
+                ))}
+              </div>
+              
+              {/* Tags row */}
+              <div 
+                className="flex flex-row items-start"
+                style={{
+                  width: '327px',
+                  height: '44px',
+                  gap: '12px'
+                }}
+              >
+                {activities.slice(2, 4).map((activity) => (
+                  <WorkoutActivityCard
+                    key={activity.id}
+                    activity={activity}
+                    isSelected={selectedActivities.includes(activity.id)}
+                    onToggle={() => handleActivityToggle(activity.id)}
+                  />
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Continue Button */}
@@ -135,7 +228,7 @@ const WorkoutActivityScreen: React.FC<WorkoutActivityScreenProps> = ({
         <button
           onClick={handleContinue}
           disabled={selectedActivities.length === 0}
-          className="w-full bg-accent-blue hover:bg-blue-600 disabled:bg-gray-300 disabled:cursor-not-allowed text-white font-semibold py-4 px-6 rounded-button transition-colors duration-200"
+          className="w-full bg-accent-blue hover:bg-blue-600 disabled:bg-gray-600 disabled:cursor-not-allowed text-white font-semibold py-4 px-6 rounded-button transition-colors duration-200"
         >
           Continue
         </button>
@@ -162,33 +255,51 @@ const WorkoutActivityCard: React.FC<WorkoutActivityCardProps> = ({
 }) => {
   return (
     <div 
-      className={`w-full rounded-xl p-4 cursor-pointer transition-all duration-200 hover:scale-[1.02] border-2 ${
-        isSelected 
-          ? 'bg-orange-100 border-orange-400' 
-          : 'bg-white border-gray-200'
-      }`}
+      className="cursor-pointer transition-all duration-200 hover:scale-[1.02]"
+      style={{
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+        padding: '12px 18px',
+        gap: '4px',
+        width: '157.5px',
+        height: '44px',
+        background: isSelected ? '#F5BA41' : '#FFFFFF',
+        border: isSelected ? '2px solid #E6B13B' : '1px solid #D9DFE6',
+        borderRadius: '14px'
+      }}
       onClick={onToggle}
     >
-      <div className="flex flex-col items-center text-center space-y-3">
-        <div className="text-4xl">
-          {activity.icon}
-        </div>
-        <div>
-          <h3 className={`font-semibold text-sm ${
-            isSelected ? 'text-orange-800' : 'text-gray-900'
-          }`}>
-            {activity.name}
-          </h3>
-        </div>
-        <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
-          isSelected 
-            ? 'border-orange-600 bg-orange-600' 
-            : 'border-gray-300'
-        }`}>
-          {isSelected && (
-            <div className="w-2 h-2 bg-white rounded-full"></div>
-          )}
-        </div>
+      {/* Icon */}
+      <div 
+        style={{
+          width: '18px',
+          height: '18px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center'
+        }}
+      >
+        <span style={{ fontSize: '16px' }}>{activity.icon}</span>
+      </div>
+      
+      {/* Text */}
+      <div 
+        style={{
+          width: 'auto',
+          height: '20px',
+          fontFamily: 'Plus Jakarta Sans',
+          fontWeight: isSelected ? 700 : 500,
+          fontSize: '14px',
+          lineHeight: '20px',
+          color: isSelected ? '#FFFFFF' : '#808B9A',
+          display: 'flex',
+          alignItems: 'center',
+          textAlign: 'center'
+        }}
+      >
+        {activity.name}
       </div>
     </div>
   );
