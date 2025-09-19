@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useState } from 'react';
+import RunningMapZoomScreen from './RunningMapZoomScreen';
 
 interface RunningActivityTrackingScreenProps {
   onBack: () => void;
@@ -6,6 +7,25 @@ interface RunningActivityTrackingScreenProps {
 }
 
 const RunningActivityTrackingScreen: React.FC<RunningActivityTrackingScreenProps> = ({ onBack, onContinue }) => {
+  const [showZoomScreen, setShowZoomScreen] = useState(false);
+
+  const handleZoomClick = () => {
+    setShowZoomScreen(true);
+  };
+
+  const handleBackFromZoom = () => {
+    setShowZoomScreen(false);
+  };
+
+  if (showZoomScreen) {
+    return (
+      <RunningMapZoomScreen 
+        onBack={handleBackFromZoom}
+        onContinue={onContinue}
+      />
+    );
+  }
+
   return (
     <div 
       className="text-gray-900 flex flex-col mx-auto relative"
@@ -15,7 +35,7 @@ const RunningActivityTrackingScreen: React.FC<RunningActivityTrackingScreenProps
         borderRadius: '26px',
         opacity: 1,
         background: '#FAFAFA',
-        boxShadow: '0px 4px 20px rgba(114, 114, 114, 0.1)',
+        boxShadow: '0px 4px 20px 0px #7272721A',
         overflow: 'hidden'
       }}
     >
@@ -31,10 +51,39 @@ const RunningActivityTrackingScreen: React.FC<RunningActivityTrackingScreenProps
         </div>
       </div>
 
-      {/* Header */}
-      <div className="px-6 py-4">
-        <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center space-x-3">
+      {/* Navigation Header + Divider */}
+      <div 
+        className="flex flex-col items-center"
+        style={{
+          width: '375px',
+          height: '80px',
+          gap: '12px',
+          opacity: 1,
+          paddingTop: '12px',
+          paddingRight: '24px',
+          paddingBottom: '12px',
+          paddingLeft: '24px'
+        }}
+      >
+        {/* Content */}
+        <div 
+          className="flex flex-row items-center"
+          style={{
+            width: '327px',
+            height: '56px',
+            gap: '10px',
+            opacity: 1
+          }}
+        >
+          {/* Left Icon */}
+          <div 
+            className="flex flex-row justify-center items-center"
+            style={{
+              width: '20px',
+              height: '22px',
+              borderRadius: '14px'
+            }}
+          >
             <button 
               onClick={onBack}
               className="p-1 hover:bg-gray-100 rounded-full transition-colors"
@@ -43,16 +92,51 @@ const RunningActivityTrackingScreen: React.FC<RunningActivityTrackingScreenProps
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
               </svg>
             </button>
-            <div className="w-px h-6 bg-gray-300"></div>
-            <h1 className="text-lg font-semibold text-gray-900">Activity tracking</h1>
           </div>
-          <div className="flex items-center space-x-2">
-            <span className="px-2 py-1 bg-green-100 text-green-800 text-xs font-medium rounded-full">Running</span>
-            <button className="p-1 hover:bg-gray-100 rounded-full transition-colors">
-              <svg className="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-              </svg>
-            </button>
+
+          {/* Line Divider */}
+          <div 
+            style={{
+              width: '0px',
+              height: '56px',
+              transform: 'rotate(-180deg)'
+            }}
+          >
+            <div 
+              style={{
+                width: '56px',
+                height: '0px',
+                border: '1px solid #ECEFF2',
+                transform: 'rotate(-90deg)'
+              }}
+            ></div>
+          </div>
+
+          {/* Text */}
+          <div 
+            style={{
+              width: '230px',
+              height: '56px',
+              opacity: 1
+            }}
+          >
+            <div 
+              style={{
+                width: '165px',
+                height: '24px',
+                opacity: 1,
+                fontFamily: 'Plus Jakarta Sans',
+                fontWeight: 700,
+                fontStyle: 'normal',
+                fontSize: '16px',
+                lineHeight: '24px',
+                letterSpacing: '0px',
+                verticalAlign: 'bottom',
+                color: '#39434F'
+              }}
+            >
+              Running to Hyde Park
+            </div>
           </div>
         </div>
       </div>
@@ -170,92 +254,310 @@ const RunningActivityTrackingScreen: React.FC<RunningActivityTrackingScreenProps
             </div>
           </div>
 
-          {/* Map Section */}
-          <div 
-            className="relative mb-4"
-            style={{
-              width: '327px',
-              height: '282px',
-              background: 'url("/map (2).png")',
-              backgroundSize: 'cover',
-              backgroundPosition: 'center',
-              border: '1px solid #ECEFF2',
-              boxShadow: '0px 0px 5px 0px #0C1A4B0A, 0px 4px 20px -2px #32324705',
-              borderRadius: '24px',
-              opacity: 1,
-              marginTop: '8px'
-            }}
-          >
-            {/* Cut-out Rectangle */}
-            <div 
-              className="absolute"
-              style={{
-                width: '59.817073822021484px',
-                height: '60px',
-                left: '267.18px',
-                top: '0px',
-                opacity: 1,
-                background: '#FAFAFA',
-                borderRadius: '24px 24px 0px 0px'
-              }}
-            >
-              {/* Fullscreen Button */}
-              <button 
-                className="absolute flex items-center justify-center"
-                style={{
-                  width: '38px',
-                  height: '38px',
-                  left: '11px',
-                  top: '11px',
-                  background: '#2A3240',
-                  borderRadius: '14px'
-                }}
-              >
-                <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                  <path d="M3 3h4v2H5v2H3V3zM13 3h4v4h-2V5h-2V3zM3 13v4h4v-2H5v-2H3zM15 13h2v2h2v2h-4v-4z" stroke="#FFFFFF" strokeWidth="1.5" fill="none"/>
-                </svg>
-              </button>
-            </div>
-
-
-            {/* User Pin */}
-            <div 
-              className="absolute"
-              style={{
-                width: '51.31px',
-                height: '72.68px',
-                left: '59px',
-                top: '0px'
-              }}
-            >
+              {/* Map Section */}
               <div 
-                className="absolute"
+                className="relative mb-4"
                 style={{
-                  width: '51.31px',
-                  height: '72.68px',
-                  background: 'linear-gradient(360deg, rgba(255, 255, 255, 0.9) -0.44%, rgba(242, 247, 253, 0) 44.97%), rgba(255, 255, 255, 0.6)',
-                  borderRadius: '50% 50% 50% 0'
+                  width: '327px',
+                  height: '282px',
+                  background: 'url("/map (2).png")',
+                  backgroundSize: 'cover',
+                  backgroundPosition: 'center',
+                  border: '1px solid #ECEFF2',
+                  boxShadow: '0px 0px 5px 0px #0C1A4B0A, 0px 4px 20px -2px #32324705',
+                  borderRadius: '24px',
+                  opacity: 1,
+                  marginTop: '8px'
                 }}
               >
+                {/* Timer Card - Overlay on Map */}
                 <div 
-                  className="absolute flex items-center justify-center"
+                  className="absolute flex items-center bg-white rounded-2xl shadow-sm cursor-pointer"
+                  onClick={handleZoomClick}
                   style={{
-                    width: '38.48px',
-                    height: '38.48px',
-                    left: '6.41px',
-                    top: '7.48px',
-                    background: '#FFFFFF',
-                    boxShadow: '0px 6.41317px 10.6886px rgba(45, 45, 45, 0.16)',
-                    borderRadius: '21.3772px'
+                    width: '303px',
+                    height: '78px',
+                    background: '#FFFFFFE5',
+                    boxShadow: '0px 0px 5px 0px #0C1A4B0A, 0px 4px 20px -2px #32324705',
+                    backdropFilter: 'blur(5px)',
+                    borderRadius: '16px',
+                    paddingTop: '14px',
+                    paddingRight: '4px',
+                    paddingBottom: '14px',
+                    paddingLeft: '12px',
+                    gap: '10px',
+                    bottom: '8px',
+                    left: '50%',
+                    transform: 'translateX(-50%)',
+                    opacity: 1,
+                    zIndex: 20,
+                    transition: 'all 0ms ease-in-out'
                   }}
                 >
-                  <div className="w-6 h-6 rounded-full bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center">
-                    <span className="text-white font-bold text-sm">T</span>
+                  {/* Content */}
+                  <div 
+                    className="flex justify-between items-center"
+                    style={{
+                      width: '275px',
+                      height: '50px',
+                      gap: '30px'
+                    }}
+                  >
+                    {/* Details */}
+                    <div 
+                      className="flex items-center"
+                      style={{
+                        width: '233px',
+                        height: '50px',
+                        gap: '8px'
+                      }}
+                    >
+                      {/* Map Overview Icon */}
+                      <div 
+                        style={{
+                          width: '32px',
+                          height: '50px',
+                          position: 'relative'
+                        }}
+                      >
+                        <svg width="32" height="50" viewBox="0 0 32 50" fill="none">
+                          {/* Map lines */}
+                          <path d="M9.32 0.44L9.32 25.84" stroke="#B4DC8A" strokeWidth="1.5" opacity="0.3" transform="rotate(2.56 9.32 13.14)"/>
+                          <path d="M9.31 4L28.66 18.52" stroke="#B4DC8A" strokeWidth="1.5" opacity="0.3" transform="rotate(-15 19.485 11.26)"/>
+                          <path d="M1.76 22.56L12.03 46.66" stroke="#82C43C" strokeWidth="1.61867" transform="rotate(-15 6.895 34.61)"/>
+                          {/* Bullet point */}
+                          <circle cx="5.94" cy="15.85" r="5.26" fill="#E6F3D8" stroke="#82C43C" strokeWidth="1"/>
+                          <circle cx="5.94" cy="15.85" r="2.835" fill="#82C43C"/>
+                        </svg>
+                      </div>
+
+                      {/* Details Text */}
+                      <div 
+                        className="flex flex-col items-start"
+                        style={{
+                          width: '193px',
+                          height: '50px',
+                          gap: '2px'
+                        }}
+                      >
+                        {/* Title + Icon */}
+                        <div 
+                          className="flex items-center"
+                          style={{
+                            width: '85px',
+                            height: '18px',
+                            gap: '4px'
+                          }}
+                        >
+                          {/* Timer Icon */}
+                          <div 
+                            style={{
+                              width: '16px',
+                              height: '16px',
+                              position: 'relative'
+                            }}
+                          >
+                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                              <circle cx="8" cy="8" r="7" stroke="#606873" strokeWidth="1.5" fill="none"/>
+                              <path d="M8 4v4l3 3" stroke="#606873" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                            </svg>
+                          </div>
+                          <span 
+                            style={{
+                              width: '65px',
+                              height: '18px',
+                              fontFamily: 'Plus Jakarta Sans',
+                              fontWeight: 600,
+                              fontSize: '13px',
+                              lineHeight: '18px',
+                              color: '#808B9A'
+                            }}
+                          >
+                            Today Run
+                          </span>
+                        </div>
+
+                        {/* Timer */}
+                        <div 
+                          className="flex items-end"
+                          style={{
+                            width: '193px',
+                            height: '30px',
+                            gap: '10px'
+                          }}
+                        >
+                          {/* Distance */}
+                          <div 
+                            className="flex items-end"
+                            style={{
+                              width: '65px',
+                              height: '30px',
+                              gap: '4px'
+                            }}
+                          >
+                            <span 
+                              style={{
+                                width: '43px',
+                                height: '30px',
+                                fontFamily: 'Plus Jakarta Sans',
+                                fontWeight: 700,
+                                fontSize: '20px',
+                                lineHeight: '30px',
+                                color: '#39434F'
+                              }}
+                            >
+                              10.4
+                            </span>
+                            <span 
+                              style={{
+                                width: '18px',
+                                height: '24px',
+                                fontFamily: 'Plus Jakarta Sans',
+                                fontWeight: 500,
+                                fontSize: '12px',
+                                lineHeight: '16px',
+                                color: '#808B9A'
+                              }}
+                            >
+                              km
+                            </span>
+                          </div>
+
+                          {/* Divider */}
+                          <div 
+                            style={{
+                              width: '16px',
+                              height: '0px',
+                              border: '1px solid #D9DFE6',
+                              transform: 'rotate(90deg)'
+                            }}
+                          ></div>
+
+                          {/* Time */}
+                          <div 
+                            className="flex items-end"
+                            style={{
+                              width: '108px',
+                              height: '30px',
+                              gap: '4px'
+                            }}
+                          >
+                            <span 
+                              style={{
+                                width: '77px',
+                                height: '30px',
+                                fontFamily: 'Plus Jakarta Sans',
+                                fontWeight: 700,
+                                fontSize: '20px',
+                                lineHeight: '30px',
+                                color: '#39434F'
+                              }}
+                            >
+                              2:23:45
+                            </span>
+                            <span 
+                              style={{
+                                width: '27px',
+                                height: '24px',
+                                fontFamily: 'Plus Jakarta Sans',
+                                fontWeight: 500,
+                                fontSize: '12px',
+                                lineHeight: '16px',
+                                color: '#808B9A'
+                              }}
+                            >
+                              hrs
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Arrow Button */}
+                    <div 
+                      className="flex items-center justify-center"
+                      style={{
+                        width: '38px',
+                        height: '38px'
+                      }}
+                    >
+                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                        <path d="M9 18L15 12L9 6" stroke="#808B9A" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                      </svg>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Cut-out Rectangle */}
+                <div 
+                  className="absolute"
+                  style={{
+                    width: '59.817073822021484px',
+                    height: '60px',
+                    left: '267.18px',
+                    top: '0px',
+                    opacity: 1,
+                    background: '#FAFAFA',
+                    borderRadius: '24px 24px 0px 0px'
+                  }}
+                >
+                  {/* Fullscreen Button */}
+                  <button 
+                    onClick={handleZoomClick}
+                    className="absolute flex items-center justify-center"
+                    style={{
+                      width: '38px',
+                      height: '38px',
+                      left: '11px',
+                      top: '11px',
+                      background: '#2A3240',
+                      borderRadius: '14px'
+                    }}
+                  >
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                      <path d="M3 3h4v2H5v2H3V3zM13 3h4v4h-2V5h-2V3zM3 13v4h4v-2H5v-2H3zM15 13h2v2h2v2h-4v-4z" stroke="#FFFFFF" strokeWidth="1.5" fill="none"/>
+                    </svg>
+                  </button>
+                </div>
+
+                {/* User Pin */}
+                <div 
+                  className="absolute"
+                  style={{
+                    width: '51.31px',
+                    height: '72.68px',
+                    left: '59px',
+                    top: '0px'
+                  }}
+                >
+                  <div 
+                    className="absolute"
+                    style={{
+                      width: '51.31px',
+                      height: '72.68px',
+                      background: 'linear-gradient(360deg, rgba(255, 255, 255, 0.9) -0.44%, rgba(242, 247, 253, 0) 44.97%), rgba(255, 255, 255, 0.6)',
+                      borderRadius: '50% 50% 50% 0'
+                    }}
+                  >
+                    <div 
+                      className="absolute flex items-center justify-center"
+                      style={{
+                        width: '38.48px',
+                        height: '38.48px',
+                        left: '6.41px',
+                        top: '7.48px',
+                        background: '#FFFFFF',
+                        boxShadow: '0px 6.41317px 10.6886px rgba(45, 45, 45, 0.16)',
+                        borderRadius: '21.3772px'
+                      }}
+                    >
+                      <div className="w-6 h-6 rounded-full bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center">
+                        <span className="text-white font-bold text-sm">T</span>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          </div>
 
         </div>
 
@@ -726,227 +1028,6 @@ const RunningActivityTrackingScreen: React.FC<RunningActivityTrackingScreenProps
         </div>
       </div>
 
-      {/* Timer Card - Overlay on Map */}
-      <div 
-        className="absolute flex items-center bg-white rounded-2xl shadow-sm cursor-pointer"
-        style={{
-          width: '303px',
-          height: '78px',
-          background: '#FFFFFFE5',
-          boxShadow: '0px 0px 5px 0px #0C1A4B0A, 0px 4px 20px -2px #32324705',
-          backdropFilter: 'blur(5px)',
-          borderRadius: '16px',
-          paddingTop: '14px',
-          paddingRight: '4px',
-          paddingBottom: '14px',
-          paddingLeft: '12px',
-          gap: '10px',
-          bottom: '20px',
-          left: '50%',
-          transform: 'translateX(-50%)',
-          opacity: 1,
-          zIndex: 10,
-          transition: 'all 0ms ease-in-out'
-        }}
-        onClick={() => {
-          // Navigate to "Running - Map - Zoom in"
-          console.log('Navigate to Running - Map - Zoom in');
-        }}
-      >
-        {/* Content */}
-        <div 
-          className="flex justify-between items-center"
-          style={{
-            width: '275px',
-            height: '50px',
-            gap: '30px'
-          }}
-        >
-          {/* Details */}
-          <div 
-            className="flex items-center"
-            style={{
-              width: '233px',
-              height: '50px',
-              gap: '8px'
-            }}
-          >
-            {/* Map Overview Icon */}
-            <div 
-              style={{
-                width: '32px',
-                height: '50px',
-                position: 'relative'
-              }}
-            >
-              <svg width="32" height="50" viewBox="0 0 32 50" fill="none">
-                {/* Map lines */}
-                <path d="M9.32 0.44L9.32 25.84" stroke="#B4DC8A" strokeWidth="1.5" opacity="0.3" transform="rotate(2.56 9.32 13.14)"/>
-                <path d="M9.31 4L28.66 18.52" stroke="#B4DC8A" strokeWidth="1.5" opacity="0.3" transform="rotate(-15 19.485 11.26)"/>
-                <path d="M1.76 22.56L12.03 46.66" stroke="#82C43C" strokeWidth="1.61867" transform="rotate(-15 6.895 34.61)"/>
-                {/* Bullet point */}
-                <circle cx="5.94" cy="15.85" r="5.26" fill="#E6F3D8" stroke="#82C43C" strokeWidth="1"/>
-                <circle cx="5.94" cy="15.85" r="2.835" fill="#82C43C"/>
-              </svg>
-            </div>
-
-            {/* Details Text */}
-            <div 
-              className="flex flex-col items-start"
-              style={{
-                width: '193px',
-                height: '50px',
-                gap: '2px'
-              }}
-            >
-              {/* Title + Icon */}
-              <div 
-                className="flex items-center"
-                style={{
-                  width: '85px',
-                  height: '18px',
-                  gap: '4px'
-                }}
-              >
-                {/* Timer Icon */}
-                <div 
-                  style={{
-                    width: '16px',
-                    height: '16px',
-                    position: 'relative'
-                  }}
-                >
-                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                    <circle cx="8" cy="8" r="6" stroke="#606873" strokeWidth="1.5" fill="none"/>
-                    <path d="M8 4v4l2 2" stroke="#606873" strokeWidth="1.5" strokeLinecap="round"/>
-                  </svg>
-                </div>
-                <span 
-                  style={{
-                    width: '65px',
-                    height: '18px',
-                    fontFamily: 'Plus Jakarta Sans',
-                    fontWeight: 600,
-                    fontSize: '13px',
-                    lineHeight: '18px',
-                    color: '#808B9A'
-                  }}
-                >
-                  Today Run
-                </span>
-              </div>
-
-              {/* Timer */}
-              <div 
-                className="flex items-end"
-                style={{
-                  width: '193px',
-                  height: '30px',
-                  gap: '10px'
-                }}
-              >
-                {/* Distance */}
-                <div 
-                  className="flex items-end"
-                  style={{
-                    width: '65px',
-                    height: '30px',
-                    gap: '4px'
-                  }}
-                >
-                  <span 
-                    style={{
-                      width: '43px',
-                      height: '30px',
-                      fontFamily: 'Plus Jakarta Sans',
-                      fontWeight: 700,
-                      fontSize: '20px',
-                      lineHeight: '30px',
-                      color: '#39434F'
-                    }}
-                  >
-                    10.4
-                  </span>
-                  <span 
-                    style={{
-                      width: '18px',
-                      height: '24px',
-                      fontFamily: 'Plus Jakarta Sans',
-                      fontWeight: 500,
-                      fontSize: '12px',
-                      lineHeight: '16px',
-                      color: '#808B9A'
-                    }}
-                  >
-                    km
-                  </span>
-                </div>
-
-                {/* Divider */}
-                <div 
-                  style={{
-                    width: '16px',
-                    height: '0px',
-                    border: '1px solid #D9DFE6',
-                    transform: 'rotate(90deg)'
-                  }}
-                ></div>
-
-                {/* Time */}
-                <div 
-                  className="flex items-end"
-                  style={{
-                    width: '108px',
-                    height: '30px',
-                    gap: '4px'
-                  }}
-                >
-                  <span 
-                    style={{
-                      width: '77px',
-                      height: '30px',
-                      fontFamily: 'Plus Jakarta Sans',
-                      fontWeight: 700,
-                      fontSize: '20px',
-                      lineHeight: '30px',
-                      color: '#39434F'
-                    }}
-                  >
-                    2:23:45
-                  </span>
-                  <span 
-                    style={{
-                      width: '27px',
-                      height: '24px',
-                      fontFamily: 'Plus Jakarta Sans',
-                      fontWeight: 500,
-                      fontSize: '12px',
-                      lineHeight: '16px',
-                      color: '#808B9A'
-                    }}
-                  >
-                    hrs
-                  </span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Arrow Button */}
-          <button 
-            className="flex items-center justify-center"
-            style={{
-              width: '38px',
-              height: '38px',
-              borderRadius: '14px'
-            }}
-          >
-            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-              <path d="M7.5 5L12.5 10L7.5 15" stroke="#808B9A" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-            </svg>
-          </button>
-        </div>
-      </div>
 
       {/* Home Indicator - Hidden on web */}
       <div className="hidden sm:flex justify-center pb-2">
